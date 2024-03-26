@@ -63,18 +63,52 @@ $(document).ready(function () {
     });
 
     function toggleNavigation() {
-        if ($(window).width() <= 767) {
-            $("nav").css({
-                'height': 'auto'
-            })
 
+        if ($(window).width() <= 767) {
+            if (mobileBar == false) {
+
+            } else {
+                $("nav").css({
+                    height: '465px'
+                })
+            }
+            adjustVideoSize();
         } else {
             // Caso a tela seja maior que 767px, garantimos que o menu seja visível
             $("#nav, #rede").css({
                 'display': 'flex',
                 'opacity': '1'
             });
+
+            $("nav").css({
+                height: 'auto'
+            })
             mobileBar = true;
         }
+
     }
+
+    function adjustVideoSize() {
+        var windowHeight = window.outerHeight;
+        var windowWidth = window.outerWidth;
+        var aspectRatio = 16 / 9; // proporção de aspecto do vídeo, ajuste conforme necessário
+        var videoWidth, videoHeight;
+
+        // Calcula a largura e a altura do vídeo com base na largura da janela e na proporção de aspecto
+        if (windowWidth / windowHeight > aspectRatio) {
+            videoWidth = windowWidth;
+            videoHeight = videoWidth / aspectRatio;
+        } else {
+            videoHeight = windowHeight;
+            videoWidth = videoHeight * aspectRatio;
+        }
+
+        // Define o tamanho do iframe do vídeo
+        var videoIframe = document.querySelector('#background');
+        videoIframe.style.width = videoWidth + 'px';
+        videoIframe.style.height = videoHeight + 'px';
+    }
+
+    // Chama a função de ajuste inicialmente e adiciona um ouvinte de evento para redimensionamento da janela
+    adjustVideoSize();
 });
