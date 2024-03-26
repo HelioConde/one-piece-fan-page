@@ -268,9 +268,15 @@ nav ul li:active {
     #rede {
         display: none;
     }
-    
-    #view, #story {
+
+    #view,
+    #story {
         height: auto;
+    }
+
+
+    .description p {
+        margin: 10px auto;
     }
 }
 
