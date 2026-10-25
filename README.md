@@ -1,30 +1,42 @@
-# One Piece Fan Page — Projeto de interface
+<div align="center">
+  <h1>🏴‍☠️ One Piece — Fan Page</h1>
+  <p><strong>Uma homenagem independente ao universo de One Piece, com navegação dinâmica e páginas de mídia.</strong></p>
+  <p><img alt="HTML5" src="https://img.shields.io/badge/HTML5%20%2B%20CSS3-Interface-E34F26"> <img alt="jQuery" src="https://img.shields.io/badge/jQuery-AJAX-0769AD?logo=jquery&logoColor=white"></p>
+</div>
 
-**Fan page independente dedicada ao universo de One Piece, criada como exercício de desenvolvimento web.**
+## Experiência do site
 
-## Tecnologias
+Fan page criada como exercício de frontend e navegação de conteúdo. O arquivo `js/navigation.js` carrega páginas parciais via AJAX, aplica transições visuais e guarda a seção visitada no `localStorage`.
 
-- HTML para estrutura das páginas.
-- CSS para layout e apresentação visual.
-- JavaScript para interações.
-- Arquivos de mídia e páginas auxiliares nas pastas `media/` e `view/`.
+| Página | Arquivo |
+| --- | --- |
+| Início | `view/home.html` |
+| História | `view/story.html` |
+| Trailers | `view/trailer.html` |
+| Wallpapers | `view/wallpaper.html` |
 
-## Como visualizar
+A experiência também contém menu mobile e recursos de imagem e vídeo na pasta `media/`.
 
-Clone o repositório e execute um servidor HTTP estático na pasta, por exemplo:
+## Executar
 
 ```bash
+git clone https://github.com/HelioConde/one-piece-fan-page.git
+cd one-piece-fan-page
 python -m http.server 8000
 ```
 
-Depois acesse `http://localhost:8000`.
+Acesse `http://localhost:8000`. O servidor é importante para permitir que as páginas em `view/` sejam carregadas corretamente por AJAX.
 
-## Estado
+## Organização
 
-Projeto de estudo / fan page. A documentação não afirma que o conteúdo está atualizado com os episódios, capítulos ou lançamentos mais recentes.
+`index.html` · `css/` · `js/navigation.js` · `view/` · `media/` · `fontawesome-free-6.5.1-web/`.
 
-## Direitos autorais
+## Estado e avisos
 
-Projeto **não oficial**, sem afiliação com Eiichiro Oda, Shueisha ou titulares da franquia. Nomes, personagens e imagens de terceiros pertencem aos seus respectivos titulares.
+**Projeto de estudo, sem afiliação oficial.** O conteúdo não é apresentado como catálogo atualizado de episódios, mangás ou lançamentos.
+
+One Piece e seus personagens, marcas, trilhas, imagens e vídeos pertencem a seus respectivos titulares. O repositório não concede direito de redistribuir materiais de terceiros.
+
+Melhorias possíveis: acessibilidade do menu, URLs para cada seção, performance dos assets, créditos de mídia e testes responsivos.
 
 Desenvolvido por [Hélio Conde](https://github.com/HelioConde).
