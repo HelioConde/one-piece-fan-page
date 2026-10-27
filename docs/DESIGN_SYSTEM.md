@@ -56,3 +56,6 @@ A captura de 1366×768 mostrou CTA da Home fora da primeira dobra. A capa preser
 
 ## Revisão de capturas — leitura e navegação
 A navegação interna da História agora destaca o capítulo que está em leitura usando `aria-current=location`, sem alterar o hash da página. Um botão de retorno ao topo foi acrescentado no rodapé para as páginas extensas. Ambos são controlados por JavaScript sem dependências e dispõem de testes Playwright para navegação por rolagem e respeito ao cabeçalho fixo.
+
+## Galeria navegável e links compartilháveis (27/10/2026)
+Cada transformação abre sua própria arte através de `#wallpaper/<id>`, sem abandonar o GitHub Pages. O modal usa o elemento `<dialog>` nativo, com setas anterior/próximo, teclas esquerda/direita, swipe, contador e legendas derivadas de `js/data.js`. Dentro de um filtro, a navegação permanece nas artes filtradas; fechar remove o identificador da arte da URL. Os controles têm área de toque mínima de 44 px.

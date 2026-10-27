@@ -54,7 +54,15 @@
   </footer>
   <dialog id="gallery-dialog" class="gallery-dialog" aria-label="Visualização ampliada de imagem">
     <button type="button" class="dialog-close icon-button" id="dialog-close" aria-label="Fechar imagem">✕</button>
-    <figure><img id="dialog-image" alt=""><figcaption id="dialog-caption"></figcaption></figure>
+    <figure>
+      <img id="dialog-image" alt="">
+      <figcaption id="dialog-caption"></figcaption>
+    </figure>
+    <div class="gallery-dialog-controls" role="group" aria-label="Navegação pelas artes ampliadas">
+      <button type="button" id="dialog-prev" class="icon-button" aria-label="Imagem ampliada anterior">←</button>
+      <span id="dialog-position" aria-live="off">01 / 10</span>
+      <button type="button" id="dialog-next" class="icon-button" aria-label="Próxima imagem ampliada">→</button>
+    </div>
   </dialog>
 </body>
 </html>

@@ -33,9 +33,14 @@ export function setupNavigation(onPageReady) {
   window.matchMedia('(min-width: 761px)').addEventListener('change', closeMenu);
 
   async function render() {
-    const raw = location.hash.slice(1);
-    const page = Object.hasOwn(pages, raw) ? raw : 'home';
-    if (!raw || !Object.hasOwn(pages,raw)) history.replaceState(null,'',location.pathname + location.search + '#home');
+    const raw = decodeURIComponent(location.hash.slice(1));
+    const [requestedPage, artworkId, ...extra] = raw.split('/');
+    // Uma arte da galeria pode ser compartilhada como #wallpaper/gear5.
+    const valid=Object.hasOwn(pages,requestedPage) &&
+      ((requestedPage==='wallpaper' && extra.length===0) ||
+       (requestedPage!=='wallpaper' && !artworkId && extra.length===0));
+    const page=valid?requestedPage:'home';
+    if(!valid)history.replaceState(null,'',location.pathname+location.search+'#home');
     const id = ++requestNumber;
     if (activeRequest) activeRequest.abort();
     viewCleanup();
@@ -63,10 +68,7 @@ export function setupNavigation(onPageReady) {
     } finally {
       if (id === requestNumber) {
         app.removeAttribute('aria-busy');
-        const isDeepLink = !Object.hasOwn(pages,raw);
-        if (!isDeepLink) {
-          window.scrollTo({top:0,behavior:'instant'});
-        }
+        window.scrollTo({top:0,behavior:'instant'});
         if (document.readyState === 'complete' && document.activeElement !== document.body) app.focus({preventScroll:true});
       }
     }

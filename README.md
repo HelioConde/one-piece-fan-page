@@ -66,3 +66,6 @@ Criado por [Hélio Conde](https://github.com/HelioConde).
 Execute `npm run test:visual` para percorrer Home, História, Transformações, Galeria e Trailers em seis larguras, fotografando **páginas inteiras**. Os testes registram `pageerror`, erros de console e falhas de requisição local, verificam imagens e detectam overflow e elementos recortados. Os arquivos `.jpg` e `.json` são anexados ao relatório Playwright e publicados como artefatos do GitHub Actions. As capturas são evidências para revisão humana; não há promessa de classificação estética automática ou comparação pixel a pixel com baselines.
 
 A Home também recuperou a **rotação de dez artes** do projeto clássico, com controle manual, pausa e suporte a movimento reduzido.
+
+## Galeria de artes com deep links
+É possível abrir diretamente uma arte usando, por exemplo, `#wallpaper/gear5`. Os cartões de Transformações levam à respectiva arte. No modal, navegue com as setas dos botões, teclas esquerda/direita ou gesto de deslizar; o contador indica a posição e os filtros continuam funcionais. O link é compartilhável e não necessita backend.
