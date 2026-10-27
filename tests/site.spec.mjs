@@ -1,0 +1,75 @@
+import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('início: conteúdo real, navegação e seções',async({page})=>{
+  await page.goto('/');
+  await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
+  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'História'}).click();
+  await expect(page).toHaveURL(/#story$/);
+  await expect(page.getByRole('heading',{name:'Uma história de sonhos e liberdade'})).toBeVisible();
+  await expect(page.getByRole('link',{name:'História',exact:true})).toHaveAttribute('aria-current','page');
+  await page.goBack();
+  await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
+});
+
+test('menu mobile abre, navega e fecha com Escape',async({page})=>{
+  await page.setViewportSize({width:375,height:812});await page.goto('/');
+  const menu=page.getByRole('button',{name:'Abrir menu'});
+  await expect(menu).toBeVisible();await menu.click();
+  await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded','true');
+  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Galeria'}).click();
+  await expect(page.getByRole('heading',{name:'Galeria dos mares'})).toBeVisible();
+  await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded','false');
+  await page.locator('#menu-toggle').click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded','false');
+});
+
+test('carrossel: controles e pausa',async({page})=>{
+  await page.goto('/#home');
+  await expect(page.locator('#slide-title')).toHaveText('Luffy');
+  await page.getByRole('button',{name:'Próxima imagem'}).click();
+  await expect(page.locator('#slide-title')).toHaveText('Gear Second');
+  await page.getByRole('button',{name:'Pausar reprodução automática'}).click();
+  await expect(page.locator('#slide-pause')).toHaveAttribute('aria-pressed','true');
+  await page.locator('[data-carousel]').focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('#slide-title')).toHaveText('Luffy');
+});
+
+test('galeria: filtros e janela modal',async({page})=>{
+  await page.goto('/#wallpaper');
+  await expect(page.locator('.gallery-item')).toHaveCount(10);
+  await page.getByRole('button',{name:'Especiais'}).click();
+  await expect(page.locator('.gallery-item')).toHaveCount(1);
+  await page.getByRole('button',{name:'Ampliar Nightmare Luffy'}).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByRole('button',{name:'Fechar imagem'}).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+});
+
+test('vídeos: consentimento antes de carregar iframe',async({page})=>{
+  await page.goto('/#trailer');
+  await expect(page.locator('iframe')).toHaveCount(0);
+  await page.getByRole('button',{name:'Reproduzir vídeo do YouTube'}).click();
+  await expect(page.locator('iframe')).toHaveCount(1);
+  await expect(page.locator('iframe')).toHaveAttribute('src',/youtube-nocookie.com/);
+});
+
+test('acessibilidade básica WCAG 2 A/AA na home',async({page})=>{
+  await page.goto('/');
+  await expect(page.getByRole('heading',{level:1})).toBeVisible();
+  const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+});
+
+for(const width of [320,375,768,1024,1440,1920]){
+  test('responsivo: sem overflow horizontal em '+width+'px',async({page},testInfo)=>{
+    await page.setViewportSize({width,height:900});
+    await page.goto('/#home');
+    await expect(page.locator('#hero-title')).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+    await testInfo.attach('home-'+width+'.png',{body:await page.screenshot({fullPage:true}),contentType:'image/png'});
+  });
+}

@@ -1,0 +1,18 @@
+{
+  "name": "one-piece-fan-experience",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fan page estática de One Piece com testes de UI e acessibilidade",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "check": "node --check js/data.js && node --check js/navigation.js && node --check js/script.js"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.56.1"
+  }
+}
