@@ -50,3 +50,6 @@ Conferir 320, 375, 768, 1024, 1440 e 1920px; sem corte de títulos, sem rolagem 
 
 ## Capa animada (conceito clássico recuperado)
 A Home exibe as dez artes originais em sequência na coluna direita; a foto inicial é Luffy e as demais entram com crossfade suave. A troca ocorre a cada 4,4 segundos, suspensa enquanto usuário interage/foca/passa mouse ou ao perder visibilidade. Em `prefers-reduced-motion: reduce` a troca automática inicia pausada; setas e swipe seguem disponíveis. A arte não desaparece no mobile. Na captura automatizada a reprodução é pausada para resultados reproduzíveis.
+
+## Refinamento por captura (27/10/2026)
+A captura de 1366×768 mostrou CTA da Home fora da primeira dobra. A capa preserva as dez artes rotativas, com altura responsiva e versão compacta para viewports baixos. Menu fixado durante leitura, capítulos com `scroll-margin-top` para não ficar sob o cabeçalho e espaçamento editorial mais contido nas páginas internas. Testes de viewport baixo verificam presença dos botões da Home sem rolagem.
