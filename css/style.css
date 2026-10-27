@@ -270,25 +270,27 @@ html{scroll-padding-top:5.5rem}
 }
 .hero-video-bg iframe{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  display:block;border:0;opacity:.86;filter:saturate(.82) brightness(.78);
+  display:block;border:0;opacity:.98;filter:saturate(1.02) brightness(.99);
   pointer-events:none;
 }
 .hero-video-bg::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(3,12,24,.88) 0%,rgba(3,12,24,.67) 43%,rgba(3,12,24,.45) 100%);
+  background:linear-gradient(90deg,rgba(3,12,24,.86) 0%,rgba(3,12,24,.6) 34%,rgba(3,12,24,.3) 67%,rgba(3,12,24,.15) 100%);
 }
 .hero::before{z-index:1}
 .hero-grid{position:relative;z-index:2}
 .hero-video-toggle{
-  position:absolute;left:0;bottom:.15rem;z-index:3;
-  display:inline-flex;align-items:center;justify-content:center;
-  min-height:44px;padding:.55rem .9rem;border:1px solid var(--line);
-  border-radius:100px;background:rgba(4,16,27,.87);color:var(--ink);
-  font-size:.8rem;font-weight:750;letter-spacing:.01em;
+  position:absolute;left:0;bottom:.85rem;z-index:3;
+  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  min-height:46px;padding:.55rem 1rem;border:1px solid rgba(248,197,102,.38);
+  border-radius:100px;background:rgba(4,16,27,.94);color:var(--ink);
+  font-size:.85rem;font-weight:750;line-height:1.3;letter-spacing:.01em;
+  box-shadow:0 6px 20px rgba(0,0,0,.3);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
 }
+.hero-video-toggle [data-hero-video-icon]{display:inline-grid;place-items:center;min-width:1.3rem;height:1.3rem;color:var(--gold);font-size:1rem;line-height:1}
 .hero-video-toggle:hover{background:rgba(18,49,72,.96);border-color:var(--gold)}
 @media(max-width:760px){
   .hero-video-toggle{position:relative;left:auto;bottom:auto;justify-self:start;margin-top:.6rem}
-  .hero-video-bg::after{background:linear-gradient(180deg,rgba(3,12,24,.84),rgba(3,12,24,.65) 58%,rgba(3,12,24,.5))}
+  .hero-video-bg::after{background:linear-gradient(180deg,rgba(3,12,24,.82),rgba(3,12,24,.57) 58%,rgba(3,12,24,.31))}
 }
