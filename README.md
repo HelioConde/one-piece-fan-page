@@ -71,3 +71,9 @@ A Home também recuperou a **rotação de dez artes** do projeto clássico, com 
 É possível abrir diretamente uma arte usando, por exemplo, `#wallpaper/gear5`. Os cartões de Transformações levam à respectiva arte. No modal, navegue com as setas dos botões, teclas esquerda/direita ou gesto de deslizar; o contador indica a posição e os filtros continuam funcionais. O link é compartilhável e não necessita backend.
 
 O Playwright também registra capturas do modal de galeria aberto nos viewports de 375 e 1440 px para detectar controles fora da tela.
+
+
+## Deploy GitHub Pages sem backend (27/10/2026)
+O workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publica somente `index.html` e as pastas públicas `css/`, `js/`, `media/`, `view/` e `fontawesome-free-6.5.1-web/`. Código de teste e ferramentas de desenvolvimento ficam fora do artefato. A Action realiza verificações de sintaxe e conteúdo antes de publicar; o workflow `qa.yml` executa Playwright separadamente.
+
+Para usar a Action, selecione **Settings → Pages → Source → GitHub Actions**. Endereço esperado: https://helioconde.github.io/one-piece-fan-page/ . A conclusão do deploy precisa ser verificada na aba Actions; criar o workflow não prova, por si só, que o site já está no ar.
