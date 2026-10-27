@@ -87,3 +87,7 @@ O Pages agora só publica após **Fan Page QA** passar no mesmo commit da `main`
 
 ### Playwright no GitHub Actions
 A instalação do navegador baixa apenas o Chromium do Playwright no runner Ubuntu hospedado pelo GitHub, sem executar `apt-get` a cada PR. A concorrência é limitada por PR/branch e novas alterações cancelam um QA obsoleto. O workflow completo continua validando acessibilidade, navegação, layouts e capturas antes de liberar Pages.
+
+## Vídeo de fundo da Home
+
+A capa usa como **background** o vídeo **“Uma viagem pelos mares”**, já listado na página de trailers, via Vimeo (`927337615`). O vídeo é decorativo, silencioso, em repetição e fica atrás do título, botões e artes rotativas. Um controle permite desativar/ativar o fundo; em navegadores configurados para **redução de movimento**, o vídeo começa desativado. Se o Vimeo não carregar, a Home mantém a imagem local e o gradiente como fundo. Como o provedor é externo, a reprodução depende das permissões de incorporação e das restrições do navegador.
