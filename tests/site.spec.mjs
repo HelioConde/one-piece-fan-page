@@ -79,6 +79,12 @@ for(const width of [320,375,768,1024,1440,1920]){
     await expect(page.locator('#hero-title')).toBeVisible();
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
-    await testInfo.attach('home-'+width+'.png',{body:await page.screenshot({fullPage:true}),contentType:'image/png'});
+    // Força a decodificação das imagens abaixo da dobra antes da captura
+    await page.evaluate(async()=>{
+      const imgs=[...document.querySelectorAll('img')];
+      imgs.forEach(img=>img.loading='eager');
+      await Promise.all(imgs.map(img=>img.decode().catch(()=>{})));
+    });
+    await testInfo.attach('home-'+width+'.png',{body:await page.screenshot({fullPage:true,animations:'disabled'}),contentType:'image/png'});
   });
 }

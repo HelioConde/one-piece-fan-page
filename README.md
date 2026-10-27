@@ -12,7 +12,7 @@ Fan page independente de **One Piece**, modernizada em HTML, CSS e JavaScript na
 - Carrossel com setas, indicadores, pausa, teclado, swipe e respeito a movimentos reduzidos.
 - Navegação compartilhável por hash, estado ativo, botão mobile semântico e tratamento de falhas de carregamento.
 - SEO social (Open Graph), menu de salto, foco visível e imagens WebP.
-- Testes automatizados em Chromium para desktop e mobile.
+- Testes automatizados em Chromium para desktop e mobile, incluindo verificações de geometria do layout e carregamento de imagens.
 
 ## Acessar
 Site publicado: https://helioconde.github.io/one-piece-fan-page/
@@ -39,7 +39,7 @@ npx playwright install chromium
 npm test
 ```
 
-O relatório HTML é gerado em `playwright-report/`. Para atualizar as capturas de comparação, primeiro revise a saída em `test-results/`, capture baselines validadas e faça commit delas conscientemente. Capturas de QA são registradas nos artefatos da integração contínua.
+O relatório HTML é gerado em `playwright-report/`. Para atualizar as capturas de comparação, primeiro revise a saída em `test-results/`, capture baselines validadas e faça commit delas conscientemente. Capturas de QA são registradas nos artefatos da integração contínua. Antes de capturar, o teste força a decodificação das imagens lazy para evitar áreas vazias nas imagens de relatório. A suíte também detecta regressões geométricas (sobreposição entre colunas e rolagem horizontal), mas **ainda não implementa comparação pixel a pixel com snapshots de referência aprovadas**.
 
 ## Estrutura
 
