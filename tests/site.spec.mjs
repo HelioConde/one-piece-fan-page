@@ -116,3 +116,41 @@ test('capa inicial: respeita redução de movimento, sem esconder arte no celula
   await page.locator('#hero-next').click();
   await expect(page.locator('[data-hero-slider]')).toHaveAttribute('data-hero-index','1');
 });
+
+
+test('história: capítulo ativo acompanha a leitura sem alterar o hash',async({page})=>{
+  await page.setViewportSize({width:1366,height:647});
+  await page.goto('/#story');
+  const links=page.getByRole('navigation',{name:'Capítulos da história'});
+  await expect(links.getByRole('link',{name:'A Grande Era'})).toHaveAttribute('aria-current','location');
+  await links.getByRole('link',{name:'A promessa'}).click();
+  await expect(page.locator('#chapter-shanks')).toBeFocused();
+  await expect(links.getByRole('link',{name:'A promessa'})).toHaveAttribute('aria-current','location');
+  await links.getByRole('link',{name:'O primeiro passo'}).click();
+  await expect(page.locator('#chapter-sea')).toBeFocused();
+  await expect(links.getByRole('link',{name:'O primeiro passo'})).toHaveAttribute('aria-current','location');
+  await expect(page).toHaveURL(/#story$/);
+});
+
+test('navegação após rolagem abre a página no título sem esconder sob a navbar',async({page})=>{
+  await page.setViewportSize({width:1366,height:647});
+  await page.goto('/#home');
+  await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight));
+  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'História'}).click();
+  await expect(page.getByRole('heading',{name:'Uma história de sonhos e liberdade'})).toBeVisible();
+  const bounds=await page.evaluate(()=>{
+    const heading=document.querySelector('.page-heading h1').getBoundingClientRect();
+    const header=document.querySelector('.site-header').getBoundingClientRect();
+    return {headingTop:heading.top,headerBottom:header.bottom,scrollY};
+  });
+  expect(bounds.headingTop).toBeGreaterThanOrEqual(bounds.headerBottom-1);
+  expect(bounds.scrollY).toBeLessThanOrEqual(5);
+});
+
+test('botão do rodapé volta ao topo sem navegar para a Home',async({page})=>{
+  await page.goto('/#story');
+  await page.locator('#back-to-top').scrollIntoViewIfNeeded();
+  await page.getByRole('button',{name:'Voltar ao topo'}).click();
+  await expect.poll(()=>page.evaluate(()=>scrollY),{timeout:4500}).toBeLessThanOrEqual(3);
+  await expect(page).toHaveURL(/#story$/);
+});

@@ -53,3 +53,6 @@ A Home exibe as dez artes originais em sequência na coluna direita; a foto inic
 
 ## Refinamento por captura (27/10/2026)
 A captura de 1366×768 mostrou CTA da Home fora da primeira dobra. A capa preserva as dez artes rotativas, com altura responsiva e versão compacta para viewports baixos. Menu fixado durante leitura, capítulos com `scroll-margin-top` para não ficar sob o cabeçalho e espaçamento editorial mais contido nas páginas internas. Testes de viewport baixo verificam presença dos botões da Home sem rolagem.
+
+## Revisão de capturas — leitura e navegação
+A navegação interna da História agora destaca o capítulo que está em leitura usando `aria-current=location`, sem alterar o hash da página. Um botão de retorno ao topo foi acrescentado no rodapé para as páginas extensas. Ambos são controlados por JavaScript sem dependências e dispõem de testes Playwright para navegação por rolagem e respeito ao cabeçalho fixo.
