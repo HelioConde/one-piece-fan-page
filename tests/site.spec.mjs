@@ -311,3 +311,42 @@ test('Home: preferência por movimento reduzido desliga o fundo de vídeo',async
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+for(const [width,height] of [[375,812],[1584,780]]){
+  test('Home: fundo dos mares visível, controles separados e texto legível em '+width+'px',async({page},testInfo)=>{
+    await page.setViewportSize({width,height});
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    await page.route('https://player.vimeo.com/**',route=>route.fulfill({
+      status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'
+    }));
+    await page.goto('/#home');
+    const video=page.locator('#hero-video-bg iframe');
+    const toggle=page.locator('#hero-video-toggle');
+    await expect(video).toHaveCount(1);
+    await expect(toggle).toHaveAttribute('aria-pressed','true');
+    await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
+    await expect(page.getByRole('link',{name:/Conhecer a história/})).toBeVisible();
+    await expect(page.locator('[data-hero-slider]')).toBeVisible();
+    const appearance=await page.evaluate(()=>{
+      const toggle=document.querySelector('#hero-video-toggle');
+      const video=document.querySelector('#hero-video-bg iframe');
+      const style=getComputedStyle(toggle);
+      const videoStyle=getComputedStyle(video);
+      return {
+        gap:parseFloat(style.gap),
+        videoOpacity:parseFloat(videoStyle.opacity),
+        filter:videoStyle.filter,
+        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth
+      };
+    });
+    expect(appearance.gap).toBeGreaterThanOrEqual(8);
+    expect(appearance.videoOpacity).toBeGreaterThanOrEqual(.95);
+    expect(appearance.filter).not.toContain('brightness(0.78)');
+    expect(appearance.overflow).toBeLessThanOrEqual(1);
+    await testInfo.attach('video-fundo-'+width+'.png',{
+      body:await page.screenshot({fullPage:false,animations:'disabled'}),
+      contentType:'image/png'
+    });
+  });
+}
