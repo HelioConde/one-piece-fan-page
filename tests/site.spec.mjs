@@ -49,7 +49,7 @@ test('galeria: filtros e janela modal',async({page})=>{
   await expect(page.locator('.gallery-item')).toHaveCount(10);
   await page.getByRole('button',{name:'Especiais'}).click();
   await expect(page.locator('.gallery-item')).toHaveCount(1);
-  await page.getByRole('button',{name:'Nightmare Luffy Ampliar ↗'}).click();
+  await page.getByRole('button',{name:/Nightmare Luffy/}).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.getByRole('button',{name:'Fechar imagem'}).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();

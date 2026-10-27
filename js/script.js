@@ -104,7 +104,7 @@ function setupGallery(){
     count.textContent=selected.length+' artes disponíveis';
     selected.forEach(art=>{
       const card=element('article',{class:'gallery-item'});
-      const button=element('button',{type:'button','aria-label':art.title+' Ampliar ↗'});
+      const button=element('button',{type:'button'});
       const picture=element('div',{class:'gallery-picture'});
       picture.append(element('img',{src:imagePath(art),alt:'Arte de '+art.title,loading:'lazy',decoding:'async'}));
       const info=element('span',{class:'gallery-info'});
