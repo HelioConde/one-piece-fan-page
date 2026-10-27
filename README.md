@@ -17,33 +17,33 @@ Fan page independente de **One Piece**, modernizada em HTML, CSS e JavaScript na
 ## Acessar
 Site publicado: https://helioconde.github.io/one-piece-fan-page/
 
-> A publicação depende de o GitHub Pages estar configurado para a branch \`main\`. Mudanças em uma branch de trabalho aparecem somente após incorporação à \`main\`.
+> A publicação depende de o GitHub Pages estar configurado para a branch `main`. Mudanças em uma branch de trabalho aparecem somente após incorporação à `main`.
 
 ## Rodar localmente
 
 Requer Node.js 20+ (ou qualquer servidor estático HTTP equivalente).
 
-\`\`\`bash
+```bash
 git clone https://github.com/HelioConde/one-piece-fan-page.git
 cd one-piece-fan-page
 node scripts/serve.mjs
-\`\`\`
+```
 
-Abra http://127.0.0.1:4173. Abrir o HTML com \`file://\` não funciona porque a navegação carrega páginas parciais via \`fetch\`.
+Abra http://127.0.0.1:4173. Abrir o HTML com `file://` não funciona porque a navegação carrega páginas parciais via `fetch`.
 
 ## Testes
 
-\`\`\`bash
+```bash
 npm install
 npx playwright install chromium
 npm test
-\`\`\`
+```
 
-O relatório HTML é gerado em \`playwright-report/\`. Para atualizar as capturas de comparação, primeiro revise a saída em \`test-results/\`, capture baselines validadas e faça commit delas conscientemente. Capturas de QA são registradas nos artefatos da integração contínua.
+O relatório HTML é gerado em `playwright-report/`. Para atualizar as capturas de comparação, primeiro revise a saída em `test-results/`, capture baselines validadas e faça commit delas conscientemente. Capturas de QA são registradas nos artefatos da integração contínua.
 
 ## Estrutura
 
-\`\`\`text
+```text
 index.html                  Shell acessível e SEO
 css/style.css               Estilos, tokens e responsividade
 js/navigation.js            Rotas, menu, histórico hash e erros
@@ -55,7 +55,7 @@ docs/DESIGN_SYSTEM.md       Padrões de design e QA
 tests/                      Testes E2E e acessibilidade
 scripts/serve.mjs           Servidor local para testes
 .github/workflows/qa.yml    Verificação automatizada
-\`\`\`
+```
 
 ## Direitos e créditos
 Projeto de estudo e homenagem **não oficial**, sem afiliação à Shueisha, Toei Animation ou à equipe de One Piece. Marcas, personagens e artes pertencem aos respectivos titulares. O repositório não garante licença de reprodução ou redistribuição das imagens e vídeos de terceiros. Vídeos são incorporados dos provedores somente após interação e podem estar indisponíveis dependendo das permissões do titular.

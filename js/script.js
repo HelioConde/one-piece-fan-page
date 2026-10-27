@@ -127,6 +127,16 @@ function setupGallery(){
   return ()=>{if(dialog.open)dialog.close();};
 }
 
+function setupStory(){
+  const links=[...document.querySelectorAll('[data-scroll-target]')];
+  links.forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();
+    const section=document.getElementById(link.dataset.scrollTarget);
+    if(section){section.setAttribute('tabindex','-1');section.scrollIntoView({behavior:'auto',block:'start'});section.focus({preventScroll:true});}
+  }));
+  return ()=>{};
+}
+
 function setupVideos(){
   const buttons=[...document.querySelectorAll('[data-play-video]')];
   const providers={
@@ -143,6 +153,7 @@ function setupVideos(){
 }
 setupNavigation(page=>{
   if(page==='home')return setupCarousel();
+  if(page==='story')return setupStory();
   if(page==='wallpaper')return setupGallery();
   if(page==='characters')return setupCharacters();
   if(page==='trailer')return setupVideos();

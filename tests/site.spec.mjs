@@ -12,6 +12,13 @@ test('início: conteúdo real, navegação e seções',async({page})=>{
   await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
 });
 
+test('história: capítulos internos não quebram a rota',async({page})=>{
+  await page.goto('/#story');
+  await page.getByRole('navigation',{name:'Capítulos da história'}).getByRole('link',{name:'A promessa'}).click();
+  await expect(page).toHaveURL(/#story$/);
+  await expect(page.locator('#chapter-shanks')).toBeFocused();
+});
+
 test('menu mobile abre, navega e fecha com Escape',async({page})=>{
   await page.setViewportSize({width:375,height:812});await page.goto('/');
   const menu=page.getByRole('button',{name:'Abrir menu'});
@@ -56,12 +63,14 @@ test('vídeos: consentimento antes de carregar iframe',async({page})=>{
   await expect(page.locator('iframe')).toHaveAttribute('src',/youtube-nocookie.com/);
 });
 
-test('acessibilidade básica WCAG 2 A/AA na home',async({page})=>{
-  await page.goto('/');
-  await expect(page.getByRole('heading',{level:1})).toBeVisible();
-  const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
-  expect(results.violations).toEqual([]);
-});
+for(const route of ['home','story','characters','wallpaper','trailer']){
+  test('acessibilidade WCAG 2 A/AA em '+route,async({page})=>{
+    await page.goto('/#'+route);
+    await expect(page.getByRole('heading',{level:1})).toBeVisible();
+    const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+    expect(results.violations).toEqual([]);
+  });
+}
 
 for(const width of [320,375,768,1024,1440,1920]){
   test('responsivo: sem overflow horizontal em '+width+'px',async({page},testInfo)=>{
