@@ -84,3 +84,6 @@ Para usar a Action, selecione **Settings → Pages → Source → GitHub Actions
 Um link com fragmento inválido (por exemplo, `#%E0%A4%A`) volta automaticamente à Home em vez de causar erro JavaScript. Os deep links válidos da galeria (`#wallpaper/gear5`) continuam abrindo a imagem correta. O Playwright exercita os dois casos e registra falhas de execução.
 
 O Pages agora só publica após **Fan Page QA** passar no mesmo commit da `main`. Um QA falho ou um commit antigo não libera a publicação automática. Execução manual em `workflow_dispatch` segue disponível para manutenção. A hospedagem permanece HTML/CSS/JS, sem servidor de aplicação e sem banco de dados.
+
+### Playwright no GitHub Actions
+A instalação do navegador baixa apenas o Chromium do Playwright no runner Ubuntu hospedado pelo GitHub, sem executar `apt-get` a cada PR. A concorrência é limitada por PR/branch e novas alterações cancelam um QA obsoleto. O workflow completo continua validando acessibilidade, navegação, layouts e capturas antes de liberar Pages.
