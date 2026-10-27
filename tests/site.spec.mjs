@@ -267,3 +267,47 @@ test('links hash inválidos não quebram a navegação nem o carregamento',async
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
+
+
+test('Home: vídeo Uma viagem pelos mares como fundo, sem áudio e com controle',async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  // O teste verifica a integração sem depender de respostas do provedor externo.
+  await page.route('https://player.vimeo.com/**',route=>route.fulfill({
+    status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'
+  }));
+  await page.goto('/#home');
+  const video=page.locator('#hero-video-bg iframe');
+  await expect(video).toHaveCount(1);
+  await expect(video).toHaveAttribute('src',/927337615\?background=1.*muted=1/);
+  await expect(video).toHaveAttribute('tabindex','-1');
+  await expect(video).toHaveAttribute('aria-hidden','true');
+  await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
+  const toggle=page.getByRole('button',{name:'Desativar vídeo de fundo'});
+  await expect(toggle).toHaveAttribute('aria-pressed','true');
+  await toggle.click();
+  await expect(video).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Ativar vídeo de fundo'})).toHaveAttribute('aria-pressed','false');
+  await page.getByRole('button',{name:'Ativar vídeo de fundo'}).click();
+  await expect(video).toHaveCount(1);
+  await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'História'}).click();
+  await expect(page.locator('#hero-video-bg')).toHaveCount(0);
+});
+
+test('Home: preferência por movimento reduzido desliga o fundo de vídeo',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.route('https://player.vimeo.com/**',route=>route.fulfill({
+    status:200,contentType:'text/html',body:'<!doctype html><html></html>'
+  }));
+  await page.goto('/#home');
+  await expect(page.locator('#hero-video-bg iframe')).toHaveCount(0);
+  await expect(page.locator('.hero-image.is-active')).toBeVisible();
+  await page.getByRole('button',{name:'Ativar vídeo de fundo'}).click();
+  await expect(page.locator('#hero-video-bg iframe')).toHaveCount(1);
+  await page.emulateMedia({reducedMotion:'reduce',colorScheme:'dark'});
+  // Alterar a preferência em tempo real deve desativar o vídeo.
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.locator('#hero-video-bg iframe')).toHaveCount(0);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});

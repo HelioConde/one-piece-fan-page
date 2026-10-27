@@ -24,6 +24,64 @@ const element = (tag,attrs={},text='') => {
  * Capa rotativa inspirada na primeira versão da fan page.
  * Alterna as dez artes originais, com transição suave e sem ocultar no mobile.
  */
+
+/**
+ * "Uma viagem pelos mares" (o mesmo Vimeo exibido na aba Trailers)
+ * vira o fundo silencioso da Home. Nenhuma mídia é baixada no modo
+ * de movimento reduzido; a imagem local permanece como alternativa.
+ */
+function setupOceanVideoBackground(){
+  const hero=document.querySelector('.hero');
+  const layer=document.querySelector('#hero-video-bg');
+  const toggle=document.querySelector('#hero-video-toggle');
+  if(!hero||!layer||!toggle)return ()=>{};
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let enabled=false,frame=null;
+  const resize=()=>{
+    if(!frame)return;
+    // Vimeo exibe 16:9. Cubra a seção sem barras nas laterais.
+    const width=Math.ceil(Math.max(hero.clientWidth,hero.clientHeight*16/9));
+    const height=Math.ceil(Math.max(hero.clientHeight,hero.clientWidth*9/16));
+    frame.style.width=width+'px';
+    frame.style.height=height+'px';
+  };
+  const observer=new ResizeObserver(resize);
+  observer.observe(hero);
+  const detach=()=>{frame?.remove();frame=null;};
+  const attach=()=>{
+    if(frame||document.hidden)return;
+    frame=document.createElement('iframe');
+    frame.src='https://player.vimeo.com/video/927337615?background=1&autopause=0&muted=1&dnt=1&playsinline=1';
+    frame.title='Uma viagem pelos mares — vídeo decorativo de fundo';
+    frame.tabIndex=-1;
+    frame.setAttribute('aria-hidden','true');
+    frame.setAttribute('allow','autoplay; fullscreen');
+    frame.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+    layer.append(frame);
+    resize();
+  };
+  const sync=()=>{
+    if(enabled&&!document.hidden)attach();else detach();
+    toggle.setAttribute('aria-pressed',String(enabled));
+    toggle.textContent=enabled?'Ⅱ Desativar vídeo de fundo':'▶ Ativar vídeo de fundo';
+    toggle.setAttribute('aria-label',enabled?'Desativar vídeo de fundo':'Ativar vídeo de fundo');
+  };
+  const onClick=()=>{enabled=!enabled;sync();};
+  const onReduced=event=>{if(event.matches){enabled=false;sync();}};
+  const onVisibility=()=>sync();
+  toggle.addEventListener('click',onClick);
+  reduced.addEventListener('change',onReduced);
+  document.addEventListener('visibilitychange',onVisibility);
+  enabled=!reduced.matches;
+  sync();
+  return ()=>{
+    detach();observer.disconnect();
+    toggle.removeEventListener('click',onClick);
+    reduced.removeEventListener('change',onReduced);
+    document.removeEventListener('visibilitychange',onVisibility);
+  };
+}
+
 function setupHeroSlider(){
   const slider=document.querySelector('[data-hero-slider]');
   if(!slider)return ()=>{};
@@ -369,9 +427,10 @@ function setupVideos(){
 }
 setupNavigation(page=>{
   if(page==='home'){
+    const stopVideo=setupOceanVideoBackground();
     const stopHero=setupHeroSlider();
     const stopCarousel=setupCarousel();
-    return ()=>{stopHero();stopCarousel();};
+    return ()=>{stopVideo();stopHero();stopCarousel();};
   }
   if(page==='story')return setupStory();
   if(page==='wallpaper')return setupGallery();
