@@ -1,6 +1,8 @@
 name: One Piece Fan Page — GitHub Pages
 on:
-  push:
+  workflow_run:
+    workflows: ["Fan Page QA"]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -12,9 +14,17 @@ concurrency:
   cancel-in-progress: false
 jobs:
   verify:
+    # Nunca publicar código cujo QA falhou, foi cancelado ou é de um commit obsoleto.
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' ||
+          (github.event.workflow_run.conclusion == 'success' &&
+           github.event.workflow_run.head_branch == 'main' &&
+           github.event.workflow_run.head_sha == github.sha) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -34,6 +44,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Preparar artefato público, sem arquivos de desenvolvimento
         run: |
           mkdir -p _site
@@ -42,6 +54,8 @@ jobs:
           touch _site/.nojekyll
           test -f _site/index.html
           test -f _site/js/script.js
+          test ! -e _site/tests
+          test ! -e _site/package.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
