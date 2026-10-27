@@ -1,25 +1,49 @@
-<div id="home">
-    <div>
-        <div>
-            <img class="logo" src="./media/img/One-Piece-Logo.png" alt="">
-        </div>
-        <div class="description">
-            <p>
-                Um jovem pirata com o sonho de encontrar o lendário tesouro conhecido como "One Piece" e se tornar o Rei
-                dos Piratas.
-            </p>
-            <p>
-                Luffy adquire habilidades de uma fruta do diabo que lhe dá elasticidade, mas o torna incapaz de nadar.
-            </p>
-        </div>
-        <div class="button_control">
-            <a href="https://www.youtube.com/watch?v=MCb13lbVGE0" target="_blank">
-                <button>ASSISTIR O TRAILER</button>
-            </a>
-            <button>Outro</button>
-        </div>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">O MAR CHAMA POR VOCÊ · FAN EXPERIENCE</p>
+      <h1 id="hero-title">O mundo é feito de <em>aventuras.</em></h1>
+      <p class="lead">Siga a jornada de Monkey D. Luffy: um sonho impossível, amigos inesquecíveis e um oceano inteiro para explorar.</p>
+      <div class="actions">
+        <a class="button button-primary" href="#story">Conhecer a história <span aria-hidden="true">↗</span></a>
+        <a class="button button-secondary" href="#trailer">Ver trailers <span aria-hidden="true">▷</span></a>
+      </div>
     </div>
-    <div id="carousel">
-        <img class="imgView" src="./media/img/Luffy.webp" alt="">
+    <figure class="hero-figure"><img src="./media/img/Luffy.webp" width="620" height="650" fetchpriority="high" alt="Ilustração do pirata Monkey D. Luffy em destaque"><figcaption class="hero-label">MONKEY D. LUFFY · CAPITÃO</figcaption></figure>
+  </div>
+</section>
+<section class="section" aria-labelledby="journey-title">
+  <div class="container">
+    <div class="section-heading"><div><p class="eyebrow">A GRANDE JORNADA</p><h2 id="journey-title">Sua aventura começa aqui</h2></div><p>Explore três portos desta fan page: história, transformações e artes.</p></div>
+    <div class="cards">
+      <article class="card"><div class="card-cover"><img loading="lazy" decoding="async" src="./media/img/One-Piece-Logo.png" alt="Logotipo de One Piece"></div><div class="card-body"><h3>Uma história de liberdade</h3><p>Descubra como começou a promessa de Luffy e o surgimento da Grande Era dos Piratas.</p><a class="text-link" href="#story">Explorar história ↗</a></div></article>
+      <article class="card"><div class="card-cover"><img loading="lazy" decoding="async" src="./media/img/Snakeman.webp" alt="Arte de Luffy na forma Snakeman"></div><div class="card-body"><h3>Novos limites</h3><p>Conheça as técnicas que acompanham a evolução do capitão dos Chapéus de Palha.</p><a class="text-link" href="#characters">Ver transformações ↗</a></div></article>
+      <article class="card"><div class="card-cover"><img loading="lazy" decoding="async" src="./media/img/g5_1.webp" alt="Arte de Luffy na forma Gear Fifth"></div><div class="card-body"><h3>Galeria de artes</h3><p>Explore a seleção de imagens ilustrativas já presentes no projeto original.</p><a class="text-link" href="#wallpaper">Abrir galeria ↗</a></div></article>
     </div>
-</div>
+  </div>
+</section>
+<section class="section section-muted" aria-labelledby="carousel-title">
+  <div class="container">
+    <div class="section-heading"><div><p class="eyebrow">EVOLUÇÃO DO CAPITÃO</p><h2 id="carousel-title">As muitas formas de Luffy</h2></div><p>Explore as diferentes técnicas em um carrossel controlável, com pausa e navegação por teclado.</p></div>
+    <div class="carousel-shell" data-carousel tabindex="0" role="region" aria-roledescription="carrossel" aria-label="Transformações de Luffy">
+      <div class="carousel-layout">
+        <div class="carousel-copy">
+          <p class="eyebrow" id="slide-count">01 / 07</p><h3 id="slide-title">Luffy</h3>
+          <p id="slide-description">O capitão dos Chapéus de Palha começa sua jornada.</p>
+          <div class="carousel-controls">
+            <button type="button" id="slide-prev" aria-label="Imagem anterior">←</button>
+            <div class="carousel-dots" id="slide-dots" role="group" aria-label="Escolher slide"></div>
+            <button type="button" id="slide-next" aria-label="Próxima imagem">→</button>
+            <button type="button" id="slide-pause" aria-label="Pausar reprodução automática" aria-pressed="false">Ⅱ</button>
+          </div>
+        </div>
+        <div class="carousel-media"><img id="slide-image" src="./media/img/Luffy.webp" alt="Luffy em sua forma inicial" decoding="async"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section"><div class="container feature-band">
+  <div class="feature"><p class="eyebrow">01 / LIBERDADE</p><h3>O sonho</h3><p>Um chapéu de palha e a vontade de explorar os mares.</p></div>
+  <div class="feature"><p class="eyebrow">02 / AMIZADE</p><h3>A tripulação</h3><p>Companheiros que tornam toda travessia inesquecível.</p></div>
+  <div class="feature"><p class="eyebrow">03 / DESCOBERTA</p><h3>O horizonte</h3><p>Um universo de ilhas, desafios e histórias.</p></div>
+</div></section>

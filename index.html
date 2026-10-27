@@ -1,71 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-
+<!doctype html>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Piece</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./fontawesome-free-6.5.1-web/css/all.css">
-    <link rel="stylesheet" href="./fontawesome-free-6.5.1-web/css/fontawesome.css">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="./fontawesome-free-6.5.1-web/js/all.js"></script>
-    <script src="./fontawesome-free-6.5.1-web/js/fontawesome.js"></script>
-    <script src="./js/navigation.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071522">
+  <meta name="description" content="Explore a jornada de Luffy, as transformações do Chapéu de Palha, trailers e galeria de imagens nesta fan page independente de One Piece.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="One Piece | Uma aventura pelos mares">
+  <meta property="og:description" content="História, personagens, transformações e galeria: uma homenagem independente ao universo One Piece.">
+  <meta property="og:image" content="https://helioconde.github.io/one-piece-fan-page/media/img/Luffy.webp">
+  <meta property="og:url" content="https://helioconde.github.io/one-piece-fan-page/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://helioconde.github.io/one-piece-fan-page/">
+  <link rel="icon" type="image/png" href="./media/img/logo2.png">
+  <link rel="preload" as="image" href="./media/img/Luffy.webp" fetchpriority="high">
+  <link rel="stylesheet" href="./css/style.css">
+  <title>One Piece | Uma aventura pelos mares</title>
+  <script type="module" src="./js/script.js"></script>
 </head>
-
 <body>
-    <nav>
-        <ul id="nav">
-            <li onmouseup="pageNavgation('home')">
-                <img src="./media/img/logo2.png" class="logo" alt="">
-            </li>
-            <li onmouseup="pageNavgation('home')">HOME</li>
-            <li onmouseup="pageNavgation('story')">STORY</li>
-            <li onmouseup="pageNavgation('wallpaper')">WALLPAPERS</li>
-            <li onmouseup="pageNavgation('trailer')">TRAILER</li>
-        </ul>
-        <ul id="rede">
-            <li>
-                <a href="https://www.instagram.com/conde.helio/" target="_blank">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/helioconde/" target="_blank">
-                    <i class="fa-brands fa-linkedin"></i>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/HelioConde" target="_blank">
-                    <i class="fa-brands fa-github"></i>
-                </a>
-            </li>
-        </ul>
-        <ul id="mobile">
-            <i class="fa-solid fa-bars"></i>
-        </ul>
-    </nav>
-
-
-    <iframe
-        src="https://player.vimeo.com/video/927337615?autoplay=1&badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&controls=0&muted=1"
-        id="background" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-        title="one piece wallpaper"></iframe>
-
-    <script src="https://player.vimeo.com/api/player.js"></script>
-
-    <div id="video_control">
-        <div class="vertical-range">
-            <input type="range" min="0" max="100" value="50" class="slider" id="volume_range">
-        </div>
-        <div id="muted">
-            <i class="fa-solid fa-volume-xmark"></i>
-        </div>
+  <a class="skip-link" href="#app">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="header-inner container">
+      <a class="brand" href="#home">
+        <img src="./media/img/logo2.png" width="52" height="52" alt="">
+        <span><strong>ONE PIECE</strong><small>FAN EXPERIENCE</small></span>
+      </a>
+      <button type="button" class="menu-toggle icon-button" id="menu-toggle" aria-label="Abrir menu" aria-controls="primary-nav" aria-expanded="false">
+        <span class="menu-bars" aria-hidden="true">☰</span>
+      </button>
+      <nav aria-label="Navegação principal" id="primary-nav" class="primary-nav">
+        <a href="#home" data-nav="home">Início</a>
+        <a href="#story" data-nav="story">História</a>
+        <a href="#characters" data-nav="characters">Transformações</a>
+        <a href="#wallpaper" data-nav="wallpaper">Galeria</a>
+        <a href="#trailer" data-nav="trailer">Trailers</a>
+      </nav>
+      <a class="header-action" href="#characters">Explorar <span aria-hidden="true">↗</span></a>
     </div>
-    <div id="view"></div>
-    <script src="./js/script.js"></script>
+  </header>
+  <main id="app" tabindex="-1" aria-label="Conteúdo principal">
+    <div class="loading-screen" role="status">Preparando a próxima aventura…</div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><strong>ONE PIECE — FAN EXPERIENCE</strong><p>Um tributo de fã, não oficial e sem afiliação à franquia.</p></div>
+      <div><p>One Piece, personagens, nomes e artes pertencem a seus respectivos titulares. Imagens de estudo: consulte os créditos e direitos dos titulares antes de redistribuir.</p>
+      <p>Desenvolvido por <a href="https://github.com/HelioConde" target="_blank" rel="noopener noreferrer">Hélio Conde</a>.</p></div>
+    </div>
+  </footer>
+  <dialog id="gallery-dialog" class="gallery-dialog" aria-label="Visualização ampliada de imagem">
+    <button type="button" class="dialog-close icon-button" id="dialog-close" aria-label="Fechar imagem">✕</button>
+    <figure><img id="dialog-image" alt=""><figcaption id="dialog-caption"></figcaption></figure>
+  </dialog>
 </body>
-
 </html>

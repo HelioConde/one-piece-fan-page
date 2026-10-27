@@ -1,42 +1,63 @@
-<div align="center">
-  <h1>🏴‍☠️ One Piece — Fan Page</h1>
-  <p><strong>Uma homenagem independente ao universo de One Piece, com navegação dinâmica e páginas de mídia.</strong></p>
-  <p><img alt="HTML5" src="https://img.shields.io/badge/HTML5%20%2B%20CSS3-Interface-E34F26"> <img alt="jQuery" src="https://img.shields.io/badge/jQuery-AJAX-0769AD?logo=jquery&logoColor=white"></p>
-</div>
+# 🏴‍☠️ One Piece — Fan Experience
 
-## Experiência do site
+Fan page independente de **One Piece**, modernizada em HTML, CSS e JavaScript nativos. Funciona como site **100% estático no GitHub Pages**: sem backend, login ou banco de dados.
 
-Fan page criada como exercício de frontend e navegação de conteúdo. O arquivo `js/navigation.js` carrega páginas parciais via AJAX, aplica transições visuais e guarda a seção visitada no `localStorage`.
+## Recursos
 
-| Página | Arquivo |
-| --- | --- |
-| Início | `view/home.html` |
-| História | `view/story.html` |
-| Trailers | `view/trailer.html` |
-| Wallpapers | `view/wallpaper.html` |
+- Home cinematográfica e responsiva, com CTAs e conteúdo editorial.
+- História da Grande Era dos Piratas em capítulos.
+- Catálogo de transformações do Luffy a partir de imagens locais.
+- Galeria com filtros, descrições e modal acessível.
+- Trailers sob demanda (YouTube em modo de privacidade aprimorada e Vimeo).
+- Carrossel com setas, indicadores, pausa, teclado, swipe e respeito a movimentos reduzidos.
+- Navegação compartilhável por hash, estado ativo, botão mobile semântico e tratamento de falhas de carregamento.
+- SEO social (Open Graph), menu de salto, foco visível e imagens WebP.
+- Testes automatizados em Chromium para desktop e mobile.
 
-A experiência também contém menu mobile e recursos de imagem e vídeo na pasta `media/`.
+## Acessar
+Site publicado: https://helioconde.github.io/one-piece-fan-page/
 
-## Executar
+> A publicação depende de o GitHub Pages estar configurado para a branch `main`. Mudanças em uma branch de trabalho aparecem somente após incorporação à `main`.
+
+## Rodar localmente
+
+Requer Node.js 20+ (ou qualquer servidor estático HTTP equivalente).
 
 ```bash
 git clone https://github.com/HelioConde/one-piece-fan-page.git
 cd one-piece-fan-page
-python -m http.server 8000
+node scripts/serve.mjs
 ```
 
-Acesse `http://localhost:8000`. O servidor é importante para permitir que as páginas em `view/` sejam carregadas corretamente por AJAX.
+Abra http://127.0.0.1:4173. Abrir o HTML com `file://` não funciona porque a navegação carrega páginas parciais via `fetch`.
 
-## Organização
+## Testes
 
-`index.html` · `css/` · `js/navigation.js` · `view/` · `media/` · `fontawesome-free-6.5.1-web/`.
+```bash
+npm install
+npx playwright install chromium
+npm test
+```
 
-## Estado e avisos
+O relatório HTML é gerado em `playwright-report/`. Para atualizar as capturas de comparação, primeiro revise a saída em `test-results/`, capture baselines validadas e faça commit delas conscientemente. Capturas de QA são registradas nos artefatos da integração contínua.
 
-**Projeto de estudo, sem afiliação oficial.** O conteúdo não é apresentado como catálogo atualizado de episódios, mangás ou lançamentos.
+## Estrutura
 
-One Piece e seus personagens, marcas, trilhas, imagens e vídeos pertencem a seus respectivos titulares. O repositório não concede direito de redistribuir materiais de terceiros.
+```text
+index.html                  Shell acessível e SEO
+css/style.css               Estilos, tokens e responsividade
+js/navigation.js            Rotas, menu, histórico hash e erros
+js/script.js                Carrossel, galeria, modal, vídeos
+js/data.js                  Metadados das artes
+view/*.html                 Páginas parciais estáticas
+media/img/                  Arte local original do repositório
+docs/DESIGN_SYSTEM.md       Padrões de design e QA
+tests/                      Testes E2E e acessibilidade
+scripts/serve.mjs           Servidor local para testes
+.github/workflows/qa.yml    Verificação automatizada
+```
 
-Melhorias possíveis: acessibilidade do menu, URLs para cada seção, performance dos assets, créditos de mídia e testes responsivos.
+## Direitos e créditos
+Projeto de estudo e homenagem **não oficial**, sem afiliação à Shueisha, Toei Animation ou à equipe de One Piece. Marcas, personagens e artes pertencem aos respectivos titulares. O repositório não garante licença de reprodução ou redistribuição das imagens e vídeos de terceiros. Vídeos são incorporados dos provedores somente após interação e podem estar indisponíveis dependendo das permissões do titular.
 
-Desenvolvido por [Hélio Conde](https://github.com/HelioConde).
+Criado por [Hélio Conde](https://github.com/HelioConde).

@@ -1,114 +1,77 @@
-function pageNavgation(page) {
+const pages = {
+  home:{title:'Início'},story:{title:'História'},characters:{title:'Transformações'},
+  wallpaper:{title:'Galeria'},trailer:{title:'Trailers'}
+};
+export function setupNavigation(onPageReady) {
+  const app = document.querySelector('#app');
+  const links = [...document.querySelectorAll('[data-nav]')];
+  const menu = document.querySelector('#primary-nav');
+  const toggle = document.querySelector('#menu-toggle');
+  let activeRequest = null;
+  let viewCleanup = () => {};
+  let requestNumber = 0;
+  const closeMenu = () => {
+    menu.removeAttribute('data-open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Abrir menu');
+  };
+  toggle.addEventListener('click', () => {
+    const open = menu.getAttribute('data-open') !== 'true';
+    if (open) menu.setAttribute('data-open','true'); else closeMenu();
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.setAttribute('aria-label',open ? 'Fechar menu' : 'Abrir menu');
+  });
+  menu.addEventListener('click', event => {
+    if (event.target.closest('a')) closeMenu();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMenu();
+  });
+  document.addEventListener('click', event => {
+    if (!event.target.closest('.header-inner')) closeMenu();
+  });
+  window.matchMedia('(min-width: 761px)').addEventListener('change', closeMenu);
 
-    localStorage.setItem('page', page);
-
-    $("#view").hide();
-    $.ajax({
-        url: "view/" + page + ".html", success: function (result) {
-            $("#view").html(result).fadeIn(2000);
-        }
+  async function render() {
+    const raw = location.hash.slice(1);
+    const page = Object.hasOwn(pages, raw) ? raw : 'home';
+    if (!raw || !Object.hasOwn(pages,raw)) history.replaceState(null,'',location.pathname + location.search + '#home');
+    const id = ++requestNumber;
+    if (activeRequest) activeRequest.abort();
+    viewCleanup();
+    viewCleanup = () => {};
+    activeRequest = new AbortController();
+    links.forEach(link => {
+      if (link.dataset.nav === page) link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
     });
-
-
+    document.title = 'One Piece | ' + pages[page].title;
+    app.setAttribute('aria-busy','true');
+    app.innerHTML = '<div class="loading-screen" role="status">Carregando sua próxima aventura…</div>';
+    try {
+      const response = await fetch('./view/' + page + '.html', {signal:activeRequest.signal});
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const markup = await response.text();
+      if (id !== requestNumber) return;
+      app.innerHTML = markup;
+      viewCleanup = onPageReady(page) || (()=>{});
+    } catch (error) {
+      if (error.name === 'AbortError' || id !== requestNumber) return;
+      app.innerHTML = '<div class="error-panel"><h1 style="font-size:2rem">Não foi possível carregar a página.</h1><p>Confira sua conexão ou tente novamente.</p><button type="button" class="button button-primary" id="retry">Tentar novamente</button></div>';
+      app.querySelector('#retry').addEventListener('click',render,{once:true});
+      console.error('Falha de navegação:',error);
+    } finally {
+      if (id === requestNumber) {
+        app.removeAttribute('aria-busy');
+        const isDeepLink = !Object.hasOwn(pages,raw);
+        if (!isDeepLink) {
+          window.scrollTo({top:0,behavior:'instant'});
+        }
+        if (document.readyState === 'complete' && document.activeElement !== document.body) app.focus({preventScroll:true});
+      }
+    }
+  }
+  window.addEventListener('hashchange',render);
+  render();
+  return () => { window.removeEventListener('hashchange',render); viewCleanup(); if(activeRequest)activeRequest.abort(); };
 }
-
-$(document).ready(function () {
-    if (localStorage.getItem('page') == null) {
-        localStorage.setItem('page', 'home');
-        pageNavgation("home")
-    } else {
-        pageNavgation(localStorage.getItem('page'));
-    }
-
-    let mobileBar = false;
-    $("#mobile").on('mouseup', function () {
-        if (mobileBar == false) {
-            $("#nav, #rede").css({
-                'display': 'none',
-                'opacity': 0 // Definir a opacidade inicial como 0 para usar fadeIn posteriormente
-            }).animate({
-                'opacity': 1 // Anima a opacidade de 0 para 1
-            }, 1000).css({
-                'display': 'flex' // Após a animação, altera o display para flex
-            });
-
-
-            $("nav").animate({
-                height: '465px' // Altura desejada, por exemplo
-            }, 1000); // Duração da animação em milissegundos (por exemplo, 1000ms para 1 segundo)
-
-
-            mobileBar = true;
-        } else {
-            // Oculta os elementos #nav e #rede
-            $("#nav, #rede").animate({
-                opacity: 0 // Anima a opacidade para 0
-            }, 500, function () {
-                // Ao concluir a animação de opacidade
-                $(this).css('display', 'none'); // Define o display como none
-            });
-
-            // Modifica a altura da navegação (nav) para 85px
-            $("nav").animate({
-                height: '85px'
-            }, 500); // Duração da animação de 500ms
-
-
-            mobileBar = false;
-        }
-    })
-
-    $(window).on('resize', function () {
-        toggleNavigation();
-    });
-
-    function toggleNavigation() {
-
-        if ($(window).width() <= 767) {
-            if (mobileBar == false) {
-
-            } else {
-                $("nav").css({
-                    height: '465px'
-                })
-            }
-            adjustVideoSize();
-        } else {
-            // Caso a tela seja maior que 767px, garantimos que o menu seja visível
-            $("#nav, #rede").css({
-                'display': 'flex',
-                'opacity': '1'
-            });
-
-            $("nav").css({
-                height: 'auto'
-            })
-            mobileBar = true;
-        }
-
-    }
-
-    function adjustVideoSize() {
-        var windowHeight = window.outerHeight;
-        var windowWidth = window.outerWidth;
-        var aspectRatio = 16 / 9; // proporção de aspecto do vídeo, ajuste conforme necessário
-        var videoWidth, videoHeight;
-
-        // Calcula a largura e a altura do vídeo com base na largura da janela e na proporção de aspecto
-        if (windowWidth / windowHeight > aspectRatio) {
-            videoWidth = windowWidth;
-            videoHeight = videoWidth / aspectRatio;
-        } else {
-            videoHeight = windowHeight;
-            videoWidth = videoHeight * aspectRatio;
-        }
-
-        // Define o tamanho do iframe do vídeo
-        var videoIframe = document.querySelector('#background');
-        videoIframe.style.width = videoWidth + 'px';
-        videoIframe.style.height = videoHeight + 'px';
-    }
-
-    // Chama a função de ajuste inicialmente e adiciona um ouvinte de evento para redimensionamento da janela
-    adjustVideoSize();
-});

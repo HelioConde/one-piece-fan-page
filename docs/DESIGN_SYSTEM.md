@@ -1,0 +1,49 @@
+# Design System — One Piece Fan Experience
+
+## Objetivo
+Fan page estática, cinematográfica, responsiva e acessível. O design parte de imagens presentes no próprio repositório, sem dependência de API ou banco de dados.
+
+## Princípios
+1. **Conteúdo primeiro:** nenhuma informação indispensável fica oculta no mobile.
+2. **Controle do usuário:** vídeo externo só após clique; carrossel pausável.
+3. **Legibilidade:** tipografia nativa, linhas confortáveis e contraste alto.
+4. **Progressão visual:** destaque principal → seções editoriais → galerias.
+5. **Acessibilidade:** navegação por teclado, foco evidente, textos alternativos e respeito à redução de movimento.
+
+## Tokens de CSS
+Definidos em `css/style.css`, sob `:root`:
+
+| Família | Tokens | Aplicação |
+| --- | --- | --- |
+| Cor | `--bg`, `--surface`, `--surface-raised` | fundo, cards e blocos |
+| Texto | `--ink`, `--ink-muted` | hierarquia e leitura |
+| Acentos | `--gold`, `--red`, `--sea` | ações e ênfase |
+| Espaço | `--s1` a `--s16` | escala de 4 a 64px |
+| Cantos | `--radius-sm`, `--radius`, `--radius-lg` | 12/20/32px |
+| Efeitos | `--shadow`, `--motion` | elevação e transições |
+| Fonte | `--font` | pilha do sistema, sem download de fontes |
+
+## Componentes
+- **Site header:** identidade + links semânticos + botão mobile com `aria-expanded`.
+- **Hero:** `.hero-grid` com headline, CTA e ilustração; vira uma coluna em telas pequenas.
+- **Buttons:** `.button.button-primary` (ação principal) e `.button.button-secondary` (alternativa).
+- **Cards:** `.card`, `.card-cover` e `.card-body`; nunca ocultar card no mobile.
+- **Carrossel:** controle manual, botões com nomes acessíveis, indicadores, pausa, teclado e swipe.
+- **Galeria:** `.gallery-item`, filtros `aria-pressed` e `<dialog>` nativo.
+- **Vídeos:** placeholder local, player sob demanda, saída para plataforma original.
+- **Mensagens:** `.notice` e `.error-panel` para informação e erros.
+
+## Breakpoints
+- Até **460px**: conteúdo de uma coluna, controles reorganizados.
+- Até **760px**: menu colapsável, hero vertical, grids de duas ou uma coluna.
+- Até **980px**: navbar e grade ajustadas.
+- Acima: layout com limite máximo de 1180px.
+
+## Estados e interações
+Todo elemento acionável é `<button>` ou `<a>`; foco por `:focus-visible`; alvos de toque de 44px; nenhuma ação exclusiva do hover. Movimento decorativo é desativado com `prefers-reduced-motion: reduce`.
+
+## Uso de mídia
+Imagens de `media/img/` são ilustrações herdadas do projeto de estudo. Não presumir permissões para redistribuição. Incluir atribuição e/ou substituir por arte própria ou licenciada antes de divulgação comercial.
+
+## Checklist visual
+Conferir 320, 375, 768, 1024, 1440 e 1920px; sem corte de títulos, sem rolagem horizontal, menu acessível, modal fechável, vídeo sem autoplay, estados hover/foco e contraste apropriado.
