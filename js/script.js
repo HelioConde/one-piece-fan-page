@@ -187,7 +187,7 @@ function setupCharacters(){
     cover.append(element('img',{src:imagePath(art),alt:'Ilustração de '+art.title,loading:'lazy',decoding:'async'}));
     const body=element('div',{class:'card-body'});
     body.append(element('h3',{},art.title),element('p',{},art.description));
-    const link=element('a',{class:'text-link',href:'#wallpaper'},'Ver galeria ↗');
+    const link=element('a',{class:'text-link',href:'#wallpaper/'+art.id},'Ampliar esta arte ↗');
     body.append(link);article.append(cover,body);grid.append(article);
   }
   return ()=>{};
@@ -198,12 +198,60 @@ function setupGallery(){
   if(!grid)return ()=>{};
   const count=document.querySelector('#gallery-count');
   const buttons=[...document.querySelectorAll('[data-filter]')];
-  let filter='all';
+  const previous=document.querySelector('#dialog-prev');
+  const next=document.querySelector('#dialog-next');
+  const position=document.querySelector('#dialog-position');
+  let filter='all',visibleArts=[...artworks],activeIndex=0,gestureStart=null;
+
+  const routeFor=id=>'#wallpaper/'+id;
+  function showArt(index,{updateUrl=true,addHistory=false}={}){
+    if(!visibleArts.length)return;
+    activeIndex=(index+visibleArts.length)%visibleArts.length;
+    const art=visibleArts[activeIndex];
+    dialogImage.src=imagePath(art);
+    dialogImage.alt='Arte ampliada de '+art.title;
+    dialogCaption.textContent=art.title+' — '+art.description;
+    position.textContent=String(activeIndex+1).padStart(2,'0')+' / '+String(visibleArts.length).padStart(2,'0');
+    if(updateUrl){
+      const method=addHistory?'pushState':'replaceState';
+      history[method](null,'',location.pathname+location.search+routeFor(art.id));
+    }
+    if(!dialog.open)dialog.showModal();
+  }
+  const go=delta=>showArt(activeIndex+delta);
+  const onPrevious=()=>go(-1);
+  const onNext=()=>go(1);
+  previous.addEventListener('click',onPrevious);
+  next.addEventListener('click',onNext);
+  const onKey=event=>{
+    if(!dialog.open)return;
+    if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
+      event.preventDefault();
+      go(event.key==='ArrowRight'?1:-1);
+    }
+  };
+  dialog.addEventListener('keydown',onKey);
+  const figure=dialog.querySelector('figure');
+  const onPointerDown=event=>{gestureStart=event.clientX;};
+  const onPointerUp=event=>{
+    if(gestureStart!==null&&Math.abs(event.clientX-gestureStart)>60){
+      go(event.clientX<gestureStart?1:-1);
+    }
+    gestureStart=null;
+  };
+  figure.addEventListener('pointerdown',onPointerDown);
+  figure.addEventListener('pointerup',onPointerUp);
+  const onDialogClose=()=>{
+    if(location.hash.startsWith('#wallpaper/')){
+      history.replaceState(null,'',location.pathname+location.search+'#wallpaper');
+    }
+  };
+  dialog.addEventListener('close',onDialogClose);
   function render(){
     grid.replaceChildren();
-    const selected=artworks.filter(art=>filter==='all'||art.category===filter);
-    count.textContent=selected.length+' artes disponíveis';
-    selected.forEach(art=>{
+    visibleArts=artworks.filter(art=>filter==='all'||art.category===filter);
+    count.textContent=visibleArts.length+' artes disponíveis';
+    visibleArts.forEach((art,index)=>{
       const card=element('article',{class:'gallery-item'});
       const button=element('button',{type:'button'});
       const picture=element('div',{class:'gallery-picture'});
@@ -211,23 +259,37 @@ function setupGallery(){
       const info=element('span',{class:'gallery-info'});
       info.append(element('strong',{},art.title),element('small',{},'Ampliar ↗'));
       button.append(picture,info);
-      button.addEventListener('click',()=>{
-        dialogImage.src=imagePath(art);dialogImage.alt='Arte ampliada de '+art.title;
-        dialogCaption.textContent=art.title+' — imagem do acervo original do projeto';
-        dialog.showModal();
-      });
+      button.addEventListener('click',()=>showArt(index,{addHistory:true}));
       card.append(button);grid.append(card);
     });
   }
-  buttons.forEach(btn=>btn.addEventListener('click',()=>{
-    filter=btn.dataset.filter;
-    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
-    render();
-  }));
+  const onFilters=buttons.map(btn=>{
+    const handler=()=>{
+      filter=btn.dataset.filter;
+      buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+      render();
+    };
+    btn.addEventListener('click',handler);
+    return handler;
+  });
   render();
-  return ()=>{if(dialog.open)dialog.close();};
+  const routeArtwork=location.hash.startsWith('#wallpaper/') ? location.hash.slice('#wallpaper/'.length) : '';
+  if(routeArtwork){
+    const initial=visibleArts.findIndex(art=>art.id===routeArtwork);
+    if(initial!==-1)showArt(initial,{updateUrl:false});
+    else history.replaceState(null,'',location.pathname+location.search+'#wallpaper');
+  }
+  return ()=>{
+    dialog.removeEventListener('keydown',onKey);
+    dialog.removeEventListener('close',onDialogClose);
+    figure.removeEventListener('pointerdown',onPointerDown);
+    figure.removeEventListener('pointerup',onPointerUp);
+    previous.removeEventListener('click',onPrevious);
+    next.removeEventListener('click',onNext);
+    buttons.forEach((btn,i)=>btn.removeEventListener('click',onFilters[i]));
+    if(dialog.open)dialog.close();
+  };
 }
-
 function setupStory(){
   const links=[...document.querySelectorAll('[data-scroll-target]')];
   const chapters=links.map(link=>document.getElementById(link.dataset.scrollTarget));

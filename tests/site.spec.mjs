@@ -154,3 +154,94 @@ test('botão do rodapé volta ao topo sem navegar para a Home',async({page})=>{
   await expect.poll(()=>page.evaluate(()=>scrollY),{timeout:4500}).toBeLessThanOrEqual(3);
   await expect(page).toHaveURL(/#story$/);
 });
+
+
+test('transformações: link abre diretamente a arte correta e permite navegar',async({page})=>{
+  await page.goto('/#characters');
+  await page.locator('.card').filter({has:page.getByRole('heading',{name:'Gear Fifth'})})
+    .getByRole('link',{name:/Ampliar esta arte/}).click();
+  await expect(page).toHaveURL(/#wallpaper\/gear5$/);
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#dialog-image')).toHaveAttribute('src',/g5_1\.webp$/);
+  await expect(page.locator('#dialog-caption')).toContainText('Gear Fifth');
+  await page.getByRole('button',{name:'Próxima imagem ampliada'}).click();
+  await expect(page.locator('#dialog-caption')).toContainText('Nightmare Luffy');
+  await expect(page).toHaveURL(/#wallpaper\/nightmare$/);
+  await page.getByRole('button',{name:'Imagem ampliada anterior'}).click();
+  await expect(page.locator('#dialog-caption')).toContainText('Gear Fifth');
+  await page.getByRole('button',{name:'Fechar imagem'}).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page).toHaveURL(/#wallpaper$/);
+});
+
+test('galeria: link compartilhável direto e teclado, inclusive no celular',async({page})=>{
+  await page.setViewportSize({width:375,height:812});
+  await page.goto('/#wallpaper/snakeman');
+  await expect(page.getByRole('heading',{name:'Galeria dos mares'})).toBeVisible();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#dialog-caption')).toContainText('Snakeman');
+  await page.getByRole('dialog').press('ArrowRight');
+  await expect(page.locator('#dialog-caption')).toContainText('Gear Fifth');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page).toHaveURL(/#wallpaper$/);
+});
+
+test('galeria: controles respeitam o filtro selecionado',async({page})=>{
+  await page.goto('/#wallpaper');
+  await page.getByRole('button',{name:'Especiais'}).click();
+  await page.getByRole('button',{name:/Nightmare Luffy/}).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#dialog-position')).toHaveText('01 / 01');
+  await page.getByRole('button',{name:'Próxima imagem ampliada'}).click();
+  await expect(page.locator('#dialog-caption')).toContainText('Nightmare Luffy');
+});
+
+test('galeria: voltar no navegador fecha o modal sem perder a rota',async({page})=>{
+  await page.goto('/#wallpaper');
+  await page.getByRole('button',{name:/Gear Second em ação/}).click();
+  await expect(page).toHaveURL(/#wallpaper\/gear2b$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/#wallpaper$/);
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page.locator('.gallery-item')).toHaveCount(10);
+});
+
+test('galeria: nenhuma violação axe A/AA com modal aberto',async({page})=>{
+  await page.goto('/#wallpaper/gear5');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+});
+
+
+for(const [width,height] of [[375,812],[1440,900]]){
+  test('captura de modal navegável em '+width+'px',async({page},testInfo)=>{
+    await page.setViewportSize({width,height});
+    await page.goto('/#wallpaper/gear5');
+    const modal=page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(page.locator('#dialog-image')).toHaveJSProperty('complete',true);
+    const rects=await page.evaluate(()=>{
+      const dialog=document.querySelector('#gallery-dialog').getBoundingClientRect();
+      const controls=document.querySelector('.gallery-dialog-controls').getBoundingClientRect();
+      const close=document.querySelector('#dialog-close').getBoundingClientRect();
+      const image=document.querySelector('#dialog-image').getBoundingClientRect();
+      return {dialog:{left:dialog.left,right:dialog.right,top:dialog.top,bottom:dialog.bottom},
+        controls:{left:controls.left,right:controls.right,top:controls.top,bottom:controls.bottom},
+        close:{left:close.left,right:close.right,top:close.top,bottom:close.bottom},
+        imageWidth:image.width,
+        screen:{width:innerWidth,height:innerHeight}};
+    });
+    expect(rects.dialog.left).toBeGreaterThanOrEqual(0);
+    expect(rects.dialog.right).toBeLessThanOrEqual(width);
+    expect(rects.controls.left).toBeGreaterThanOrEqual(0);
+    expect(rects.controls.right).toBeLessThanOrEqual(width);
+    expect(rects.controls.bottom).toBeLessThanOrEqual(height+1);
+    expect(rects.imageWidth).toBeGreaterThan(80);
+    await testInfo.attach('galeria-modal-'+width+'.png',{
+      body:await page.screenshot({fullPage:false,animations:'disabled'}),
+      contentType:'image/png'
+    });
+  });
+}
