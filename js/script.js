@@ -7,6 +7,12 @@ const dialogCaption = document.querySelector('#dialog-caption');
 document.querySelector('#dialog-close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
 
+const backToTop=document.querySelector('#back-to-top');
+backToTop?.addEventListener('click',()=>{
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({top:0,behavior:reduced?'instant':'smooth'});
+});
+
 const element = (tag,attrs={},text='') => {
   const node=document.createElement(tag);
   Object.entries(attrs).forEach(([key,value]) => node.setAttribute(key,String(value)));
@@ -224,12 +230,50 @@ function setupGallery(){
 
 function setupStory(){
   const links=[...document.querySelectorAll('[data-scroll-target]')];
-  links.forEach(link=>link.addEventListener('click',event=>{
-    event.preventDefault();
-    const section=document.getElementById(link.dataset.scrollTarget);
-    if(section){section.setAttribute('tabindex','-1');section.scrollIntoView({behavior:'auto',block:'start'});section.focus({preventScroll:true});}
-  }));
-  return ()=>{};
+  const chapters=links.map(link=>document.getElementById(link.dataset.scrollTarget));
+  if(!links.length || chapters.some(chapter=>!chapter))return ()=>{};
+  const header=document.querySelector('.site-header');
+  let disposed=false,frame=0;
+  // A leitura acompanha o capítulo realmente visível, sem mudar a rota #story.
+  function updateActive(){
+    frame=0;
+    if(disposed)return;
+    const cutoff=(header?.getBoundingClientRect().bottom||0)+72;
+    let active=0;
+    chapters.forEach((chapter,i)=>{
+      if(chapter.getBoundingClientRect().top<=cutoff)active=i;
+    });
+    links.forEach((link,i)=>{
+      if(i===active)link.setAttribute('aria-current','location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function requestUpdate(){
+    if(!disposed && !frame)frame=requestAnimationFrame(updateActive);
+  }
+  const actions=links.map((link,i)=>{
+    const handler=event=>{
+      event.preventDefault();
+      const section=chapters[i];
+      // O scroll-margin é definido no CSS para respeitar o menu sticky.
+      section.setAttribute('tabindex','-1');
+      section.scrollIntoView({behavior:'auto',block:'start'});
+      section.focus({preventScroll:true});
+      requestUpdate();
+    };
+    link.addEventListener('click',handler);
+    return handler;
+  });
+  window.addEventListener('scroll',requestUpdate,{passive:true});
+  window.addEventListener('resize',requestUpdate);
+  updateActive();
+  return ()=>{
+    disposed=true;
+    if(frame)cancelAnimationFrame(frame);
+    window.removeEventListener('scroll',requestUpdate);
+    window.removeEventListener('resize',requestUpdate);
+    links.forEach((link,i)=>link.removeEventListener('click',actions[i]));
+  };
 }
 
 function setupVideos(){
