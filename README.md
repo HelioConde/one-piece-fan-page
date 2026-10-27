@@ -69,3 +69,5 @@ A Home também recuperou a **rotação de dez artes** do projeto clássico, com 
 
 ## Galeria de artes com deep links
 É possível abrir diretamente uma arte usando, por exemplo, `#wallpaper/gear5`. Os cartões de Transformações levam à respectiva arte. No modal, navegue com as setas dos botões, teclas esquerda/direita ou gesto de deslizar; o contador indica a posição e os filtros continuam funcionais. O link é compartilhável e não necessita backend.
+
+O Playwright também registra capturas do modal de galeria aberto nos viewports de 375 e 1440 px para detectar controles fora da tela.

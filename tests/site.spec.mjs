@@ -213,3 +213,35 @@ test('galeria: nenhuma violação axe A/AA com modal aberto',async({page})=>{
   const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
   expect(results.violations).toEqual([]);
 });
+
+
+for(const [width,height] of [[375,812],[1440,900]]){
+  test('captura de modal navegável em '+width+'px',async({page},testInfo)=>{
+    await page.setViewportSize({width,height});
+    await page.goto('/#wallpaper/gear5');
+    const modal=page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(page.locator('#dialog-image')).toHaveJSProperty('complete',true);
+    const rects=await page.evaluate(()=>{
+      const dialog=document.querySelector('#gallery-dialog').getBoundingClientRect();
+      const controls=document.querySelector('.gallery-dialog-controls').getBoundingClientRect();
+      const close=document.querySelector('#dialog-close').getBoundingClientRect();
+      const image=document.querySelector('#dialog-image').getBoundingClientRect();
+      return {dialog:{left:dialog.left,right:dialog.right,top:dialog.top,bottom:dialog.bottom},
+        controls:{left:controls.left,right:controls.right,top:controls.top,bottom:controls.bottom},
+        close:{left:close.left,right:close.right,top:close.top,bottom:close.bottom},
+        imageWidth:image.width,
+        screen:{width:innerWidth,height:innerHeight}};
+    });
+    expect(rects.dialog.left).toBeGreaterThanOrEqual(0);
+    expect(rects.dialog.right).toBeLessThanOrEqual(width);
+    expect(rects.controls.left).toBeGreaterThanOrEqual(0);
+    expect(rects.controls.right).toBeLessThanOrEqual(width);
+    expect(rects.controls.bottom).toBeLessThanOrEqual(height+1);
+    expect(rects.imageWidth).toBeGreaterThan(80);
+    await testInfo.attach('galeria-modal-'+width+'.png',{
+      body:await page.screenshot({fullPage:false,animations:'disabled'}),
+      contentType:'image/png'
+    });
+  });
+}
