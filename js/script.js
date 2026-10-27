@@ -63,8 +63,8 @@ function setupOceanVideoBackground(){
   const sync=()=>{
     if(enabled&&!document.hidden)attach();else detach();
     toggle.setAttribute('aria-pressed',String(enabled));
-    toggle.textContent=enabled?'Ⅱ Desativar vídeo de fundo':'▶ Ativar vídeo de fundo';
-    toggle.setAttribute('aria-label',enabled?'Desativar vídeo de fundo':'Ativar vídeo de fundo');
+    toggle.querySelector('[data-hero-video-icon]').textContent=enabled?'Ⅱ':'▶';
+    toggle.querySelector('[data-hero-video-label]').textContent=enabled?'Desativar vídeo de fundo':'Ativar vídeo de fundo';
   };
   const onClick=()=>{enabled=!enabled;sync();};
   const onReduced=event=>{if(event.matches){enabled=false;sync();}};
