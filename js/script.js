@@ -14,6 +14,96 @@ const element = (tag,attrs={},text='') => {
   return node;
 };
 
+/**
+ * Capa rotativa inspirada na primeira versão da fan page.
+ * Alterna as dez artes originais, com transição suave e sem ocultar no mobile.
+ */
+function setupHeroSlider(){
+  const slider=document.querySelector('[data-hero-slider]');
+  if(!slider)return ()=>{};
+  const images=[...slider.querySelectorAll('[data-hero-image]')];
+  const label=slider.querySelector('#hero-art-title');
+  const counter=slider.querySelector('#hero-art-count');
+  const pause=slider.querySelector('#hero-pause');
+  const slides=artworks;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let index=0,active=0,paused=reduced,focused=false,hovered=false,visible=true,timer=null,disposed=false;
+  let request=0,startX=null;
+  const clear=()=>{if(timer!==null){clearInterval(timer);timer=null;}};
+  const schedule=()=>{
+    clear();
+    if(!disposed&&!paused&&!focused&&!hovered&&visible&&!document.hidden){
+      timer=setInterval(()=>show(index+1),4400);
+    }
+  };
+  function show(next){
+    const target=(next+slides.length)%slides.length;
+    if(target===index)return;
+    const sequence=++request;
+    const art=slides[target];
+    const source=imagePath(art);
+    const preload=new Image();
+    preload.onload=()=>{
+      if(disposed||sequence!==request)return;
+      const incoming=images[1-active],outgoing=images[active];
+      incoming.src=source;
+      incoming.alt='Ilustração de '+art.title;
+      incoming.setAttribute('aria-hidden','false');
+      outgoing.setAttribute('aria-hidden','true');
+      incoming.classList.add('is-active');
+      outgoing.classList.remove('is-active');
+      active=1-active;index=target;
+      slider.dataset.heroIndex=String(index);
+      label.textContent=art.title.toUpperCase()+' · LUFFY';
+      counter.textContent=String(index+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+      counter.setAttribute('aria-label','Imagem '+(index+1)+' de '+slides.length);
+    };
+    preload.onerror=()=>{if(!disposed&&sequence===request)console.warn('Arte da capa indisponível:',source);};
+    preload.src=source;
+  }
+  function toggle(){
+    paused=!paused;
+    pause.setAttribute('aria-pressed',String(paused));
+    pause.setAttribute('aria-label',paused?'Retomar troca automática de imagens':'Pausar troca automática de imagens');
+    pause.title=paused?'Retomar imagens':'Pausar imagens';
+    pause.textContent=paused?'▶':'Ⅱ';
+    schedule();
+  }
+  if(paused)toggle(),toggle(); // garante ícone/semântica do estado reduzido sem iniciar timer
+  slider.querySelector('#hero-prev').addEventListener('click',()=>show(index-1));
+  slider.querySelector('#hero-next').addEventListener('click',()=>show(index+1));
+  pause.addEventListener('click',toggle);
+  slider.addEventListener('keydown',event=>{
+    if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
+      event.preventDefault();show(index+(event.key==='ArrowRight'?1:-1));
+    }
+  });
+  slider.addEventListener('pointerdown',event=>{startX=event.clientX;});
+  slider.addEventListener('pointerup',event=>{
+    if(startX!==null&&Math.abs(event.clientX-startX)>60)show(index+(event.clientX<startX?1:-1));
+    startX=null;
+  });
+  slider.addEventListener('mouseenter',()=>{hovered=true;schedule();});
+  slider.addEventListener('mouseleave',()=>{hovered=false;schedule();});
+  slider.addEventListener('focusin',()=>{focused=true;schedule();});
+  slider.addEventListener('focusout',event=>{
+    if(!slider.contains(event.relatedTarget)){focused=false;schedule();}
+  });
+  const onVisibility=()=>schedule();
+  document.addEventListener('visibilitychange',onVisibility);
+  const observer='IntersectionObserver' in window?new IntersectionObserver(entries=>{
+    visible=entries[0].isIntersecting;schedule();
+  },{threshold:.1}):null;
+  observer?.observe(slider);
+  // Evita tela vazia ao selecionar a próxima arte.
+  for(const art of slides.slice(1,3)){const preload=new Image();preload.src=imagePath(art);}
+  schedule();
+  return ()=>{
+    disposed=true;request++;clear();observer?.disconnect();
+    document.removeEventListener('visibilitychange',onVisibility);
+  };
+}
+
 function setupCarousel() {
   const carousel=document.querySelector('[data-carousel]');
   if(!carousel)return () => {};
@@ -152,7 +242,11 @@ function setupVideos(){
   return ()=>{};
 }
 setupNavigation(page=>{
-  if(page==='home')return setupCarousel();
+  if(page==='home'){
+    const stopHero=setupHeroSlider();
+    const stopCarousel=setupCarousel();
+    return ()=>{stopHero();stopCarousel();};
+  }
   if(page==='story')return setupStory();
   if(page==='wallpaper')return setupGallery();
   if(page==='characters')return setupCharacters();
