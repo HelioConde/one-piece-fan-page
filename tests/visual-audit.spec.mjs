@@ -57,6 +57,14 @@ for(const [route,label] of routes){
             return (rect.left < -2 || rect.right > width+2)
               ?[{tag:element.tagName,className:element.className,text:element.textContent?.trim().slice(0,60),x:rounded(rect.left),right:rounded(rect.right)}]:[];
           });
+        const textOvershoots=[...document.querySelectorAll('main h1,main h2,main h3')]
+          .filter(visible).flatMap(element=>{
+            const range=document.createRange();
+            range.selectNodeContents(element);
+            const rect=range.getBoundingClientRect();
+            return (rect.left < -2 || rect.right > width+2)
+              ?[{text:element.textContent.trim().slice(0,75),left:rounded(rect.left),right:rounded(rect.right)}]:[];
+          });
         const overlappedCards=[];
         for(const grid of document.querySelectorAll('.cards,.gallery-grid,.video-grid,.feature-band')){
           const children=[...grid.children].filter(visible);
@@ -71,7 +79,7 @@ for(const [route,label] of routes){
           }
         }
         const hero=document.querySelector('[data-hero-slider]');
-        return {overflowPixels:overflow,brokenImages,clippedElements,overlappedCards,
+        return {overflowPixels:overflow,brokenImages,clippedElements,textOvershoots,overlappedCards,
           heroImageVisible:hero?Boolean(hero.querySelector('.hero-image.is-active')?.getBoundingClientRect().width):null,
           scrollHeight:document.documentElement.scrollHeight};
       });
@@ -90,6 +98,7 @@ for(const [route,label] of routes){
       expect.soft(diagnostics.brokenImages,'Imagens ausentes de '+label+'/'+width).toEqual([]);
       expect.soft(diagnostics.clippedElements,'Componentes recortados de '+label+'/'+width).toEqual([]);
       expect.soft(diagnostics.overlappedCards,'Cards sobrepostos de '+label+'/'+width).toEqual([]);
+      expect.soft(diagnostics.textOvershoots,'Títulos que vazam a tela em '+label+'/'+width).toEqual([]);
       expect.soft(diagnostics.overflowPixels,'Overflow horizontal de '+label+'/'+width).toBeLessThanOrEqual(1);
       if(route==='home')expect.soft(diagnostics.heroImageVisible,'Capa deve continuar visível').toBe(true);
     });

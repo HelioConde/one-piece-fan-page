@@ -14,17 +14,17 @@ async function walk(dir){
 await walk(root);
 entries.sort((a,b)=>a.route.localeCompare(b.route)||a.viewport.width-b.viewport.width);
 const failures=entries.filter(e=>e.javascriptErrors.length||e.consoleErrors.length||e.networkErrors.length||
-  e.brokenImages.length||e.clippedElements.length||e.overlappedCards.length||e.overflowPixels>1);
+  e.brokenImages.length||e.clippedElements.length||e.textOvershoots?.length||e.overlappedCards.length||e.overflowPixels>1);
 const result={total:entries.length,passed:entries.length-failures.length,failed:failures.length,errors:failures,entries};
 await mkdir(output,{recursive:true});
 await writeFile(join(output,'summary.json'),JSON.stringify(result,null,2));
 const lines=[
   '# Auditoria visual automatizada — One Piece Fan Page','',
   'Cenários: '+entries.length+' / 30 · Aprovados: '+result.passed+' · Com problemas: '+result.failed,'',
-  '| Página | Largura | JS | Console | Rede | Imagens | Clipping | Sobreposição | Overflow |',
-  '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+  '| Página | Largura | JS | Console | Rede | Imagens | Clipping | Títulos | Sobreposição | Overflow |',
+  '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
   ...entries.map(e=>['| '+e.page,e.viewport.width+'px',e.javascriptErrors.length,e.consoleErrors.length,
-    e.networkErrors.length,e.brokenImages.length,e.clippedElements.length,e.overlappedCards.length,
+    e.networkErrors.length,e.brokenImages.length,e.clippedElements.length,e.textOvershoots?.length||0,e.overlappedCards.length,
     e.overflowPixels+'px |'].join(' | ')),
   '',
   'Capturas JPG e diagnósticos JSON ficam em test-results. Um teste geométrico não substitui revisão visual humana.'

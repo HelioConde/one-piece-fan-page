@@ -152,3 +152,11 @@ h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2.7rem,6.6vw,5.9rem);line-height:1.05
 @media(prefers-reduced-motion:reduce){
   .hero-figure .hero-image{transition:none;transform:none}
 }
+
+
+/* QA 320px: palavras longas não podem ampliar a largura do documento. */
+.page-heading h1{overflow-wrap:anywhere}
+@media(max-width:460px){.page-heading h1{font-size:clamp(1.95rem,9vw,2.5rem)}}
+/* O carrossel secundário também precisa conter a arte inteira no celular. */
+.carousel-media{min-width:0;min-height:0;overflow:hidden}
+.carousel-media img{display:block;max-height:100%;max-width:100%;width:100%;height:100%;object-fit:contain;min-height:0}
