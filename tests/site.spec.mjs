@@ -253,7 +253,8 @@ test('links hash inválidos não quebram a navegação nem o carregamento',async
     await page.goto('/'+fragment);
     await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
     await expect(page).toHaveURL(/#home$/);
-    await expect(page.locator('#app')).toHaveAttribute('aria-busy','false');
+    // O render remove aria-busy ao concluir, em vez de manter o atributo com 'false'.
+    await expect(page.locator('#app')).not.toHaveAttribute('aria-busy','true');
     await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início'}))
       .toHaveAttribute('aria-current','page');
   }
