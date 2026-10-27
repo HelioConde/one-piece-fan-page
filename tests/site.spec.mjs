@@ -88,3 +88,31 @@ for(const width of [320,375,768,1024,1440,1920]){
     await testInfo.attach('home-'+width+'.png',{body:await page.screenshot({fullPage:true,animations:'disabled'}),contentType:'image/png'});
   });
 }
+
+
+test('capa inicial: recupera rotação das artes originais e pausa',async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/#home');
+  const hero=page.locator('[data-hero-slider]');
+  await expect(hero).toHaveAttribute('data-hero-index','0');
+  await expect(hero.locator('.hero-image.is-active')).toHaveAttribute('src',/Luffy\.webp/);
+  await expect(hero).toHaveAttribute('data-hero-index','1',{timeout:9000});
+  await expect(hero.locator('.hero-image.is-active')).toHaveAttribute('src',/g2_0\.webp/);
+  await hero.locator('#hero-pause').click();
+  await expect(hero.locator('#hero-pause')).toHaveAttribute('aria-pressed','true');
+  await hero.locator('#hero-next').click();
+  await expect(hero).toHaveAttribute('data-hero-index','2');
+  await expect(hero.locator('.hero-image.is-active')).toHaveAttribute('src',/g2_1\.webp/);
+  await hero.locator('#hero-prev').click();
+  await expect(hero).toHaveAttribute('data-hero-index','1');
+});
+
+test('capa inicial: respeita redução de movimento, sem esconder arte no celular',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.setViewportSize({width:320,height:740});
+  await page.goto('/#home');
+  await expect(page.locator('#hero-pause')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('.hero-image.is-active')).toBeVisible();
+  await page.locator('#hero-next').click();
+  await expect(page.locator('[data-hero-slider]')).toHaveAttribute('data-hero-index','1');
+});

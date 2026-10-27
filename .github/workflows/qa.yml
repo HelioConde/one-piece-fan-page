@@ -1,7 +1,7 @@
 name: Fan Page QA
 on:
   push:
-    branches: [main, feat/modernizacao-fan-page-2026]
+    branches: [main, feat/modernizacao-fan-page-2026, feat/hero-imagens-e-auditoria-visual]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -22,6 +22,9 @@ jobs:
         run: npm run check
       - name: Testar navegação, responsividade e acessibilidade
         run: npm test
+      - name: Consolidar diagnósticos das 30 capturas
+        if: always()
+        run: node scripts/qa-summary.mjs
       - name: Salvar capturas e relatório
         if: always()
         uses: actions/upload-artifact@v4
@@ -30,4 +33,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            qa-report/
           retention-days: 14

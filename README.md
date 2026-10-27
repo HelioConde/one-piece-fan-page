@@ -61,3 +61,8 @@ scripts/serve.mjs           Servidor local para testes
 Projeto de estudo e homenagem **não oficial**, sem afiliação à Shueisha, Toei Animation ou à equipe de One Piece. Marcas, personagens e artes pertencem aos respectivos titulares. O repositório não garante licença de reprodução ou redistribuição das imagens e vídeos de terceiros. Vídeos são incorporados dos provedores somente após interação e podem estar indisponíveis dependendo das permissões do titular.
 
 Criado por [Hélio Conde](https://github.com/HelioConde).
+
+## Capturas automáticas e diagnóstico visual
+Execute `npm run test:visual` para percorrer Home, História, Transformações, Galeria e Trailers em seis larguras, fotografando **páginas inteiras**. Os testes registram `pageerror`, erros de console e falhas de requisição local, verificam imagens e detectam overflow e elementos recortados. Os arquivos `.jpg` e `.json` são anexados ao relatório Playwright e publicados como artefatos do GitHub Actions. As capturas são evidências para revisão humana; não há promessa de classificação estética automática ou comparação pixel a pixel com baselines.
+
+A Home também recuperou a **rotação de dez artes** do projeto clássico, com controle manual, pausa e suporte a movimento reduzido.

@@ -3,13 +3,27 @@
     <div class="hero-copy">
       <p class="eyebrow">O MAR CHAMA POR VOCÊ · FAN EXPERIENCE</p>
       <h1 id="hero-title">O mundo é feito de <em>aventuras.</em></h1>
-      <p class="lead">Siga a jornada de Monkey D. Luffy: um sonho impossível, amigos inesquecíveis e um oceano inteiro para explorar.</p>
+      <p class="lead">Siga a jornada de Monkey D. Luffy enquanto suas formas e transformações ganham vida na capa, como na versão original desta fan page.</p>
       <div class="actions">
         <a class="button button-primary" href="#story">Conhecer a história <span aria-hidden="true">↗</span></a>
         <a class="button button-secondary" href="#trailer">Ver trailers <span aria-hidden="true">▷</span></a>
       </div>
     </div>
-    <figure class="hero-figure"><img src="./media/img/Luffy.webp" width="620" height="650" fetchpriority="high" alt="Ilustração do pirata Monkey D. Luffy em destaque"><figcaption class="hero-label">MONKEY D. LUFFY · CAPITÃO</figcaption></figure>
+    <figure class="hero-figure" data-hero-slider data-hero-index="0" role="region" aria-roledescription="carrossel" aria-label="Artes rotativas das formas de Luffy" tabindex="0">
+      <div class="hero-image-stage">
+        <img class="hero-image is-active" data-hero-image src="./media/img/Luffy.webp" width="620" height="650" fetchpriority="high" decoding="async" alt="Ilustração de Luffy em sua forma original" aria-hidden="false">
+        <img class="hero-image" data-hero-image width="620" height="650" alt="" aria-hidden="true" decoding="async">
+      </div>
+      <figcaption class="hero-caption">
+        <span class="hero-label" id="hero-art-title">LUFFY · FORMA ORIGINAL</span>
+        <div class="hero-art-controls" role="group" aria-label="Controles das imagens da capa">
+          <button type="button" id="hero-prev" aria-label="Arte anterior da capa" title="Anterior">←</button>
+          <span class="hero-art-count" id="hero-art-count" aria-label="Imagem 1 de 10">01 / 10</span>
+          <button type="button" id="hero-next" aria-label="Próxima arte da capa" title="Próxima">→</button>
+          <button type="button" id="hero-pause" aria-label="Pausar troca automática de imagens" aria-pressed="false" title="Pausar imagens">Ⅱ</button>
+        </div>
+      </figcaption>
+    </figure>
   </div>
 </section>
 <section class="section" aria-labelledby="journey-title">

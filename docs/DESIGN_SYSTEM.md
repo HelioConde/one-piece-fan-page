@@ -47,3 +47,6 @@ Imagens de `media/img/` são ilustrações herdadas do projeto de estudo. Não p
 
 ## Checklist visual
 Conferir 320, 375, 768, 1024, 1440 e 1920px; sem corte de títulos, sem rolagem horizontal, menu acessível, modal fechável, vídeo sem autoplay, estados hover/foco e contraste apropriado.
+
+## Capa animada (conceito clássico recuperado)
+A Home exibe as dez artes originais em sequência na coluna direita; a foto inicial é Luffy e as demais entram com crossfade suave. A troca ocorre a cada 4,4 segundos, suspensa enquanto usuário interage/foca/passa mouse ou ao perder visibilidade. Em `prefers-reduced-motion: reduce` a troca automática inicia pausada; setas e swipe seguem disponíveis. A arte não desaparece no mobile. Na captura automatizada a reprodução é pausada para resultados reproduzíveis.
