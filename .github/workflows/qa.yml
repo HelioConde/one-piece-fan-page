@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+concurrency:
+  group: one-piece-qa-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   browser-tests:
     runs-on: ubuntu-latest
@@ -17,7 +20,7 @@ jobs:
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
       - name: Instalar Chromium
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Verificar sintaxe
         run: npm run check
       - name: Testar navegação, responsividade e acessibilidade

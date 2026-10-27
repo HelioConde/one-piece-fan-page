@@ -59,3 +59,11 @@ A navegação interna da História agora destaca o capítulo que está em leitur
 
 ## Galeria navegável e links compartilháveis (27/10/2026)
 Cada transformação abre sua própria arte através de `#wallpaper/<id>`, sem abandonar o GitHub Pages. O modal usa o elemento `<dialog>` nativo, com setas anterior/próximo, teclas esquerda/direita, swipe, contador e legendas derivadas de `js/data.js`. Dentro de um filtro, a navegação permanece nas artes filtradas; fechar remove o identificador da arte da URL. Os controles têm área de toque mínima de 44 px.
+
+
+## Links compartilháveis e publicação segura (27/10/2026)
+
+- A navegação `hash` captura falhas de decodificação de fragmentos percent-encoded vindos de links externos. URLs corrompidas são normalizadas para `#home`, sem lançar erro global nem prender o usuário na tela de carregamento.
+- Links válidos como `#wallpaper/gear5` permanecem compartilháveis, com modal acessível, Escape e histórico intactos.
+- A publicação no GitHub Pages é iniciada **após o workflow `Fan Page QA` passar na `main`**, e não mais por um push independente. A verificação do workflow compara o SHA aprovado ao commit atual da branch principal para evitar publicar commits obsoletos. O deploy manual continua disponível explicitamente.
+- Playwright cobre hash malformado, rota inexistente, acesso direto à galeria, restauração do foco/estado de navegação, erros JavaScript e ausência de overflow.

@@ -245,3 +245,25 @@ for(const [width,height] of [[375,812],[1440,900]]){
     });
   });
 }
+
+test('links hash inválidos não quebram a navegação nem o carregamento',async({page})=>{
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  for(const fragment of ['#%E0%A4%A','#wallpaper/%E0%A4%A','#rota-inexistente','#wallpaper/gear5/extra']){
+    await page.goto('/'+fragment);
+    await expect(page.getByRole('heading',{name:/O mundo é feito de aventuras/i})).toBeVisible();
+    await expect(page).toHaveURL(/#home$/);
+    // O render remove aria-busy ao concluir, em vez de manter o atributo com 'false'.
+    await expect(page.locator('#app')).not.toHaveAttribute('aria-busy','true');
+    await expect(page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Início'}))
+      .toHaveAttribute('aria-current','page');
+  }
+  await page.goto('/#wallpaper/gear5');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.locator('#dialog-caption')).toContainText('Gear Fifth');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  expect(errors).toEqual([]);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});

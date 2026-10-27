@@ -33,7 +33,11 @@ export function setupNavigation(onPageReady) {
   window.matchMedia('(min-width: 761px)').addEventListener('change', closeMenu);
 
   async function render() {
-    const raw = decodeURIComponent(location.hash.slice(1));
+    // Um fragmento percent-encoded inválido pode vir de links externos.
+    // Nunca interromper a navegação nem manter a tela de carregamento.
+    let raw = '';
+    try { raw = decodeURIComponent(location.hash.slice(1)); }
+    catch { raw = ''; }
     const [requestedPage, artworkId, ...extra] = raw.split('/');
     // Uma arte da galeria pode ser compartilhada como #wallpaper/gear5.
     const valid=Object.hasOwn(pages,requestedPage) &&
