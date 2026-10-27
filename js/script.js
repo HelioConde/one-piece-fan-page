@@ -69,7 +69,12 @@ function setupHeroSlider(){
     pause.textContent=paused?'▶':'Ⅱ';
     schedule();
   }
-  if(paused)toggle(),toggle(); // garante ícone/semântica do estado reduzido sem iniciar timer
+  if(paused){
+    pause.setAttribute('aria-pressed','true');
+    pause.setAttribute('aria-label','Retomar troca automática de imagens');
+    pause.title='Retomar imagens';
+    pause.textContent='▶';
+  }
   slider.querySelector('#hero-prev').addEventListener('click',()=>show(index-1));
   slider.querySelector('#hero-next').addEventListener('click',()=>show(index+1));
   pause.addEventListener('click',toggle);

@@ -36,7 +36,8 @@ for(const [route,label] of routes){
         const images=[...document.images].filter(img=>img.getAttribute('src'));
         images.forEach(img=>{img.loading='eager';});
         await Promise.all(images.map(img=>img.decode().catch(()=>null)));
-        document.querySelector('#hero-pause')?.click();
+        const pause=document.querySelector('#hero-pause');
+        if(pause?.getAttribute('aria-pressed')==='false')pause.click();
         document.querySelector('#slide-pause')?.click();
       });
       const diagnostics=await page.evaluate(()=>{
