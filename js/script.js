@@ -233,20 +233,32 @@ function setupStory(){
   const chapters=links.map(link=>document.getElementById(link.dataset.scrollTarget));
   if(!links.length || chapters.some(chapter=>!chapter))return ()=>{};
   const header=document.querySelector('.site-header');
-  let disposed=false,frame=0;
-  // A leitura acompanha o capítulo realmente visível, sem mudar a rota #story.
+  let disposed=false,frame=0,pinnedIndex=null,pinnedScrollY=0;
+  const markActive=index=>{
+    links.forEach((link,i)=>{
+      if(i===index)link.setAttribute('aria-current','location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  // Respeita a escolha explícita, mesmo quando o fim da página impede
+  // alinhar o capítulo ao topo; retoma atualização automática na rolagem real.
   function updateActive(){
     frame=0;
     if(disposed)return;
-    const cutoff=(header?.getBoundingClientRect().bottom||0)+72;
+    if(pinnedIndex!==null){
+      if(Math.abs(window.scrollY-pinnedScrollY)<=20){
+        markActive(pinnedIndex);
+        return;
+      }
+      pinnedIndex=null;
+    }
+    const cutoff=Math.max((header?.getBoundingClientRect().bottom||0)+72,
+                          Math.min(window.innerHeight*.38,300));
     let active=0;
     chapters.forEach((chapter,i)=>{
       if(chapter.getBoundingClientRect().top<=cutoff)active=i;
     });
-    links.forEach((link,i)=>{
-      if(i===active)link.setAttribute('aria-current','location');
-      else link.removeAttribute('aria-current');
-    });
+    markActive(active);
   }
   function requestUpdate(){
     if(!disposed && !frame)frame=requestAnimationFrame(updateActive);
@@ -259,6 +271,9 @@ function setupStory(){
       section.setAttribute('tabindex','-1');
       section.scrollIntoView({behavior:'auto',block:'start'});
       section.focus({preventScroll:true});
+      pinnedIndex=i;
+      pinnedScrollY=window.scrollY;
+      markActive(i);
       requestUpdate();
     };
     link.addEventListener('click',handler);

@@ -126,7 +126,8 @@ test('história: capítulo ativo acompanha a leitura sem alterar o hash',async({
   await links.getByRole('link',{name:'A promessa'}).click();
   await expect(page.locator('#chapter-shanks')).toBeFocused();
   await expect(links.getByRole('link',{name:'A promessa'})).toHaveAttribute('aria-current','location');
-  await page.locator('#chapter-sea').scrollIntoViewIfNeeded();
+  await links.getByRole('link',{name:'O primeiro passo'}).click();
+  await expect(page.locator('#chapter-sea')).toBeFocused();
   await expect(links.getByRole('link',{name:'O primeiro passo'})).toHaveAttribute('aria-current','location');
   await expect(page).toHaveURL(/#story$/);
 });
